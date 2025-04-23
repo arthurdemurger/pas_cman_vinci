@@ -24,7 +24,7 @@
 int main(int argc, char** argv) {
     struct GameState state;
     FileDescriptor sout = 1;
-    FileDescriptor map  = sopen("./resources/map.txt", O_RDONLY, 0);
+    FileDescriptor map  = sopen("../ui/resources/map.txt", O_RDONLY, 0);
     load_map(map, sout, &state);
     sclose(map);
 
