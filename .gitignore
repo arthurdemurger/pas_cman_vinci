@@ -1,5 +1,6 @@
-/.vscode/*
-/.idea/*
+**/.vscode/*
+**/.idea/*
 .DS_Store
-/.env
-/target/*
+.env.*
+**/target/**
+**/artwork/**
