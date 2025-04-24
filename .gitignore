@@ -4,4 +4,3 @@
 .env.*
 **/target/**
 **/artwork/**
-**/artwork
