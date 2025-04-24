@@ -1,6 +1,6 @@
-/target/
-/artwork/
-/.vscode
+./target/
+./artwork/
+./.vscode
 *.o
 exemple
 pas-cman-ipl
