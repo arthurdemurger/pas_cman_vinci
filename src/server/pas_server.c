@@ -52,9 +52,37 @@ void timeout_handler(int sig) {
   }
 }
 
+// Function to handle a single client connection
+void handle_client(int client_sock, int server_socket) {
+  close(server_socket);
+  // Add client-specific handling logic here
+  exit(0);
+}
+
+// Function to accept client connections and manage the server state
+void accept_clients(int server_socket, ServerState *state) {
+  while (state->clients_connected < MAX_PLAYERS) {
+    if (state->clients_connected == 1) {
+      alarm(30); // Set a timeout for the second client
+    }
+
+    int client_sock = saccept(server_socket);
+    alarm(0); // Cancel the timeout once a client connects
+
+    printf("Client %d connected.\n", state->clients_connected + 1);
+    state->client_sockets[state->clients_connected] = client_sock;
+
+    pid_t pid = fork();
+    if (pid == 0) {
+      handle_client(client_sock, server_socket);
+    }
+
+    state->clients_connected++;
+  }
+}
 
 int main(void) {
-  // Initialize shared memory and reset the game state}
+  // Initialize shared memory and reset the game state
   struct GameState *shm_ptr = initialize_shared_memory();
   printf("Shared memory initialized.\n");
 
@@ -66,36 +94,10 @@ int main(void) {
   int server_socket = initSocketServer(SERVER_PORT);
   printf("Server started on %s:%d\n", SERVER_IP, SERVER_PORT);
 
-  // // Initialize pipe
-  // int pipe_to_broadcaster[2];
-  // spipe(pipe_to_broadcaster);
-
-  // pid_t pid = sfork();
-
   ServerState state = {0};
   server_state_ptr = &state;
   signal(SIGALRM, timeout_handler);
 
-  while (state.clients_connected < 2) {
-
-    if (state.clients_connected == 1) {
-      alarm(30);
-    }
-
-    int client_sock = saccept(server_socket);
-
-    alarm(0);
-
-    printf("Client %d connecté.\n", state.clients_connected + 1);
-    state.client_sockets[state.clients_connected] = client_sock;
-
-    pid_t pid = fork();
-    if (pid == 0) {
-      close(server_socket);
-      // code
-      exit(0);
-    }
-
-    state.clients_connected++;
-  }
+  // Accept clients
+  accept_clients(server_socket, &state);
 }
