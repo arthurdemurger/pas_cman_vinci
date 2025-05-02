@@ -25,13 +25,15 @@ int main(void) {
 
   // Accept clients
   accept_clients(server_socket, &state);
+  printf("Clients accepted.\n");
 
-  // int pipe_fds[2];
-  // spipe(pipe_fds); // pipe entre le serveur et le broadcaster
+  int pipe_fds[2];
+  spipe(pipe_fds); // pipe entre le serveur et le broadcaster
 
-  // FileDescriptor fd_write_broad = pipe_fds[1];
-  // FileDescriptor fd_read_broad = pipe_fds[0];
+  FileDescriptor fd_write_broad = pipe_fds[1];
+  FileDescriptor fd_read_broad = pipe_fds[0];
 
-  // Fork le broadcaster
-  // pid_t broad_pid = fork_and_run1(run_broadcaster, fd_read_broad);
+  // Create the broadcaster process
+  pid_t broad_pid = fork_and_run1(run_broadcaster, (void *)(intptr_t)fd_read_broad);
+  printf("Broadcaster process created with PID\n");
 }

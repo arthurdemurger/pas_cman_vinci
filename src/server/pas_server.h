@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "../ui/student_kit/pascman.h"
 #include "../game/game.h"
+#include "broadcaster.h"
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"
 #include "ipc.h"
