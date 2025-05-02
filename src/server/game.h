@@ -4,6 +4,9 @@
 #include <stddef.h>
 #include <sys/types.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../shared/utils_v3.h"
 
 #include "../ui/student_kit/pascman.h"
 
