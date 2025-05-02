@@ -8,7 +8,6 @@
 #include "../server/pas_server.h"
 #include <stdlib.h>
 
-#define PERM 0666
 #define MAX_PLAYERS 2
 #define BACKLOG 2
 

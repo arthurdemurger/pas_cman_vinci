@@ -3,26 +3,29 @@ CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wvla -Werror -Wno-unused-variable -Wno-unused-but-set-variable -D_DEFAULT_SOURCE
 
 # === Fichiers sources ===
-SERVER_SRC = src/server/pas_server.c
-CLIENT_SRC = src/client/pas_client.c
-UTILS_SRC  = src/shared/utils_v3.c
-GAME_SRC   = src/game/game.c
+SERVER_SRC         = src/server/pas_server.c
+IPC_SRC            = src/server/ipc.c
+CLIENT_SRC         = src/client/pas_client.c
+UTILS_SRC          = src/shared/utils_v3.c
+GAME_SRC           = src/game/game.c
 SERVER_NETWORK_SRC = src/network/server_network.c
 CLIENT_NETWORK_SRC = src/network/client_network.c
 
 # === Fichiers headers ===
-SERVER_H = src/server/pas_server.h
-CLIENT_H = src/client/pas_client.h
-UTILS_H  = src/shared/utils_v3.h
-GAME_H   = src/game/game.h
+SERVER_H         = src/server/pas_server.h
+IPC_H            = src/server/ipc.h
+CLIENT_H         = src/client/pas_client.h
+UTILS_H          = src/shared/utils_v3.h
+GAME_H           = src/game/game.h
 SERVER_NETWORK_H = src/network/server_network.h
 CLIENT_NETWORK_H = src/network/client_network.h
 
 # === Fichiers objets ===
-SERVER_OBJ = build/pas_server.o
-CLIENT_OBJ = build/pas_client.o
-UTILS_OBJ  = build/utils_v3.o
-GAME_OBJ   = build/game.o
+SERVER_OBJ         = build/pas_server.o
+IPC_OBJ	           = build/ipc.o
+CLIENT_OBJ         = build/pas_client.o
+UTILS_OBJ          = build/utils_v3.o
+GAME_OBJ           = build/game.o
 SERVER_NETWORK_OBJ = build/server_network.o
 CLIENT_NETWORK_OBJ = build/client_network.o
 
@@ -36,7 +39,7 @@ all: build $(SERVER_BIN) $(CLIENT_BIN)
 build:
 	mkdir -p build
 
-$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(IPC_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
@@ -44,6 +47,9 @@ $(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
 
 # === Règles de compilation des objets ===
 $(SERVER_OBJ): $(SERVER_SRC) $(SERVER_H) $(UTILS_H) $(GAME_H)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(IPC_OBJ): $(IPC_SRC) $(IPC_H) $(SERVER_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(CLIENT_OBJ): $(CLIENT_SRC) $(CLIENT_H) $(UTILS_H)
