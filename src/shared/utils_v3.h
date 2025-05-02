@@ -16,6 +16,13 @@
 #include <sys/ipc.h>
 #include <poll.h>
 
+#define SERVER_IP "127.0.0.1" // localhost
+#define SERVER_PORT 15235
+
+typedef struct {
+  int client_sockets[2];
+  int clients_connected;
+} ServerState;
 
 //******************************************************//
 // KEYBOARD INPUT

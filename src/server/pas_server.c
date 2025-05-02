@@ -1,11 +1,5 @@
 #include "./pas_server.h"
 
-#define PERM 0666
-#define MAX_PLAYERS 2
-#define BACKLOG 2
-#define SERVER_IP "127.0.0.1" // localhost
-#define SERVER_PORT 15235
-
 static ServerState* server_state_ptr = NULL;
 
 // Function to initialize shared memory and reset the game state
@@ -30,55 +24,8 @@ int initialize_semaphore(void) {
   return sem_id;
 }
 
-int initSocketServer(int serverPort)
-{
-  int sockfd = ssocket();
-
-  /* no socket error */
-  sbind(serverPort, sockfd);
-
-  /* no bind error */
-  slisten(sockfd, BACKLOG);
-
-  /* no listen error */
-  return sockfd;
-}
-
-void timeout_handler(int sig) {
-  if (server_state_ptr && server_state_ptr->clients_connected == 1) {
-    close(server_state_ptr->client_sockets[0]);
-    printf("Client 1 disconnected due to timeout.\n");
-    server_state_ptr->clients_connected = 0;
-  }
-}
-
-// Function to handle a single client connection
-void handle_client(int client_sock, int server_socket) {
-  close(server_socket);
-  // Add client-specific handling logic here
-  exit(0);
-}
-
-// Function to accept client connections and manage the server state
-void accept_clients(int server_socket, ServerState *state) {
-  while (state->clients_connected < MAX_PLAYERS) {
-    if (state->clients_connected == 1) {
-      alarm(30); // Set a timeout for the second client
-    }
-
-    int client_sock = saccept(server_socket);
-    alarm(0); // Cancel the timeout once a client connects
-
-    printf("Client %d connected.\n", state->clients_connected + 1);
-    state->client_sockets[state->clients_connected] = client_sock;
-
-    pid_t pid = fork();
-    if (pid == 0) {
-      handle_client(client_sock, server_socket);
-    }
-
-    state->clients_connected++;
-  }
+ServerState* get_server_state(void) {
+  return server_state_ptr;
 }
 
 int main(void) {
@@ -91,7 +38,7 @@ int main(void) {
   printf("Semaphore initialized.\n");
 
   // Initialize socket server
-  int server_socket = initSocketServer(SERVER_PORT);
+  int server_socket = init_socket_server(SERVER_PORT);
   printf("Server started on %s:%d\n", SERVER_IP, SERVER_PORT);
 
   ServerState state = {0};
@@ -100,4 +47,13 @@ int main(void) {
 
   // Accept clients
   accept_clients(server_socket, &state);
+
+  // int pipe_fds[2];
+  // spipe(pipe_fds); // pipe entre le serveur et le broadcaster
+
+  // FileDescriptor fd_write_broad = pipe_fds[1];
+  // FileDescriptor fd_read_broad = pipe_fds[0];
+
+  // Fork le broadcaster
+  // pid_t broad_pid = fork_and_run1(run_broadcaster, fd_read_broad);
 }

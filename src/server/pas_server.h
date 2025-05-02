@@ -1,28 +1,14 @@
-#ifndef __PAS_SERVER_H__
-#define __PAS_SERVER_H__
+#ifndef _PAS_SERVER_H_
+#define _PAS_SERVER_H_
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/shm.h>
 #include "../ui/student_kit/pascman.h"
-#include "./game.h"
+#include "../game/game.h"
+#include "../network/server_network.h"
 #include "../shared/utils_v3.h"
 #include <sys/sem.h>
-#include <sys/socket.h>
-#include <unistd.h>
-
-typedef struct {
-  int client_sockets[2];
-  int clients_connected;
-} ServerState;
-
-/**
- * PRE:  serverPort: a valid port number
- * POST: on success, binds a socket to 0.0.0.0:serverPort and listens to it ;
- *       on failure, displays error cause and quits the program
- * RES: return socket file descriptor
- */
-int initSocketServer(int serverPort);
 
 /**
  * PRE:  None
@@ -40,4 +26,12 @@ int initialize_semaphore(void);
  */
 struct GameState* initialize_shared_memory(void);
 
-#endif // __PAS_SERVER_H__
+/**
+ * PRE:  None
+ * POST: Returns a pointer to the current ServerState structure.
+ *       If the ServerState is not initialized, returns NULL.
+ * RES:  Pointer to the ServerState structure or NULL if uninitialized.
+ */
+ServerState* get_server_state(void);
+
+#endif // _PAS_SERVER_H_

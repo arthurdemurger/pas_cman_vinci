@@ -6,19 +6,25 @@ CFLAGS = -std=c17 -pedantic -Wall -Wvla -Werror -Wno-unused-variable -Wno-unused
 SERVER_SRC = src/server/pas_server.c
 CLIENT_SRC = src/client/pas_client.c
 UTILS_SRC  = src/shared/utils_v3.c
-GAME_SRC   = src/server/game.c
+GAME_SRC   = src/game/game.c
+SERVER_NETWORK_SRC = src/network/server_network.c
+CLIENT_NETWORK_SRC = src/network/client_network.c
 
 # === Fichiers headers ===
 SERVER_H = src/server/pas_server.h
 CLIENT_H = src/client/pas_client.h
 UTILS_H  = src/shared/utils_v3.h
-GAME_H   = src/server/game.h
+GAME_H   = src/game/game.h
+SERVER_NETWORK_H = src/network/server_network.h
+CLIENT_NETWORK_H = src/network/client_network.h
 
 # === Fichiers objets ===
 SERVER_OBJ = build/pas_server.o
 CLIENT_OBJ = build/pas_client.o
 UTILS_OBJ  = build/utils_v3.o
 GAME_OBJ   = build/game.o
+SERVER_NETWORK_OBJ = build/server_network.o
+CLIENT_NETWORK_OBJ = build/client_network.o
 
 # === Programmes compilés ===
 SERVER_BIN = build/pas_server
@@ -30,10 +36,10 @@ all: build $(SERVER_BIN) $(CLIENT_BIN)
 build:
 	mkdir -p build
 
-$(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(CLIENT_BIN): $(CLIENT_OBJ) $(UTILS_OBJ)
+$(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # === Règles de compilation des objets ===
@@ -47,6 +53,12 @@ $(UTILS_OBJ): $(UTILS_SRC) $(UTILS_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(GAME_OBJ): $(GAME_SRC) $(GAME_H)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(SERVER_NETWORK_OBJ): $(SERVER_NETWORK_SRC) $(SERVER_NETWORK_H)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(CLIENT_NETWORK_OBJ): $(CLIENT_NETWORK_SRC) $(CLIENT_NETWORK_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # === Nettoyage ===
