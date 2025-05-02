@@ -1,9 +1,15 @@
 #include "./pas_server.h"
 
 #define PERM 0666
+#define MAX_PLAYERS 2
+#define BACKLOG 2
+#define SERVER_IP "127.0.0.1" // localhost
+#define SERVER_PORT 15235
+
+static ServerState* server_state_ptr = NULL;
 
 // Function to initialize shared memory and reset the game state
-struct GameState* initialize_shared_memory() {
+struct GameState* initialize_shared_memory(void) {
   int shm_id = sshmget(IPC_PRIVATE, sizeof(struct GameState), IPC_CREAT | PERM);
   struct GameState *shm_ptr = (struct GameState *) sshmat(shm_id);
   reset_gamestate(shm_ptr);
@@ -11,7 +17,7 @@ struct GameState* initialize_shared_memory() {
 }
 
 // Function to initialize a semaphore
-int initialize_semaphore() {
+int initialize_semaphore(void) {
   int sem_id = semget(IPC_PRIVATE, 1, IPC_CREAT | PERM);
   checkNeg(sem_id, "Semget error");
 
@@ -24,16 +30,72 @@ int initialize_semaphore() {
   return sem_id;
 }
 
+int initSocketServer(int serverPort)
+{
+  int sockfd = ssocket();
+
+  /* no socket error */
+  sbind(serverPort, sockfd);
+
+  /* no bind error */
+  slisten(sockfd, BACKLOG);
+
+  /* no listen error */
+  return sockfd;
+}
+
+void timeout_handler(int sig) {
+  if (server_state_ptr && server_state_ptr->clients_connected == 1) {
+    close(server_state_ptr->client_sockets[0]);
+    printf("Client 1 disconnected due to timeout.\n");
+    server_state_ptr->clients_connected = 0;
+  }
+}
+
 
 int main(void) {
   // Initialize shared memory and reset the game state}
   struct GameState *shm_ptr = initialize_shared_memory();
+  printf("Shared memory initialized.\n");
 
   // Initialize semaphore
   int sem_id = initialize_semaphore();
+  printf("Semaphore initialized.\n");
 
-  // Initialize pipe
-  int pipe_to_broadcaster[2];
-  spipe(pipe_to_broadcaster);
+  // Initialize socket server
+  int server_socket = initSocketServer(SERVER_PORT);
+  printf("Server started on %s:%d\n", SERVER_IP, SERVER_PORT);
 
+  // // Initialize pipe
+  // int pipe_to_broadcaster[2];
+  // spipe(pipe_to_broadcaster);
+
+  // pid_t pid = sfork();
+
+  ServerState state = {0};
+  server_state_ptr = &state;
+  signal(SIGALRM, timeout_handler);
+
+  while (state.clients_connected < 2) {
+
+    if (state.clients_connected == 1) {
+      alarm(30);
+    }
+
+    int client_sock = saccept(server_socket);
+
+    alarm(0);
+
+    printf("Client %d connecté.\n", state.clients_connected + 1);
+    state.client_sockets[state.clients_connected] = client_sock;
+
+    pid_t pid = fork();
+    if (pid == 0) {
+      close(server_socket);
+      // code
+      exit(0);
+    }
+
+    state.clients_connected++;
+  }
 }
