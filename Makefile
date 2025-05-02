@@ -1,49 +1,56 @@
-# === Alias ===
+# === Compilation flags ===
 CC = gcc
 CFLAGS = -std=c17 -pedantic -Wall -Wvla -Werror -Wno-unused-variable -Wno-unused-but-set-variable -D_DEFAULT_SOURCE
 
-# === .h Files ===
-UTILS_H = src/shared/utils_v3.h
+# === Fichiers sources ===
+SERVER_SRC = src/server/pas_server.c
+CLIENT_SRC = src/client/pas_client.c
+UTILS_SRC  = src/shared/utils_v3.c
+GAME_SRC   = src/server/game.c
+
+# === Fichiers headers ===
 SERVER_H = src/server/pas_server.h
 CLIENT_H = src/client/pas_client.h
-GAME_H = src/server/game.h
+UTILS_H  = src/shared/utils_v3.h
+GAME_H   = src/server/game.h
 
-# === Sources ===
-UTILS = src/shared/utils_v3.c
-SERVER = src/server/pas_server.c
-CLIENT = src/client/pas_client.c
-GAME = src/server/game.c
-
-# === Object Files ===
-UTILS_OBJ = build/utils_v3.o
+# === Fichiers objets ===
 SERVER_OBJ = build/pas_server.o
 CLIENT_OBJ = build/pas_client.o
-GAME_OBJ = build/game.o
+UTILS_OBJ  = build/utils_v3.o
+GAME_OBJ   = build/game.o
 
-# === Compilation ===
-all: build pas_server pas_client
+# === Programmes compilés ===
+SERVER_BIN = build/pas_server
+CLIENT_BIN = build/pas_client
+
+# === Règles principales ===
+all: build $(SERVER_BIN) $(CLIENT_BIN)
 
 build:
 	mkdir -p build
 
-pas_server: $(SERVER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
-	$(CC) $(CFLAGS) -o build/pas_server $(SERVER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(SERVER_BIN): $(SERVER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
 
-pas_client: $(CLIENT_OBJ) $(UTILS_OBJ)
-	$(CC) $(CFLAGS) -o build/pas_client $(CLIENT_OBJ) $(UTILS_OBJ)
+$(CLIENT_BIN): $(CLIENT_OBJ) $(UTILS_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(SERVER_OBJ): $(SERVER) $(SERVER_H) $(UTILS_H) $(GAME_H)
-	$(CC) $(CFLAGS) -c $(SERVER) -o $(SERVER_OBJ)
+# === Règles de compilation des objets ===
+$(SERVER_OBJ): $(SERVER_SRC) $(SERVER_H) $(UTILS_H) $(GAME_H)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(CLIENT_OBJ): $(CLIENT) $(CLIENT_H) $(UTILS_H)
-	$(CC) $(CFLAGS) -c $(CLIENT) -o $(CLIENT_OBJ)
+$(CLIENT_OBJ): $(CLIENT_SRC) $(CLIENT_H) $(UTILS_H)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(GAME_OBJ): $(GAME) $(GAME_H)
-	$(CC) $(CFLAGS) -c $(GAME) -o $(GAME_OBJ)
+$(UTILS_OBJ): $(UTILS_SRC) $(UTILS_H)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(UTILS_OBJ): $(UTILS) $(UTILS_H)
-	$(CC) $(CFLAGS) -c $(UTILS) -o $(UTILS_OBJ)
+$(GAME_OBJ): $(GAME_SRC) $(GAME_H)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# === Clean ===
+# === Nettoyage ===
 clean:
-	rm -f build/*
+	rm -f build/*.o build/pas_server build/pas_client
+
+.PHONY: all clean build
