@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <sys/shm.h>
 #include "../ui/student_kit/pascman.h"
-#include "../ui/student_kit/game.h"
-#include "../ui/student_kit/utils_v3.h"
+#include "./game.h"
+#include "../shared/utils_v3.h"
 #include <sys/sem.h>
 
 #endif // __PAS_SERVER_H__

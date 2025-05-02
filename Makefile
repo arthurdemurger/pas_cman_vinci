@@ -4,6 +4,10 @@ CFLAGS = -std=c17 -pedantic -Wall -Wvla -Werror -Wno-unused-variable -Wno-unused
 
 # === Fichiers ===
 UTILS_OBJ = build/utils_v3.o
+SERVER_OBJ = build/pas_server.o
+CLIENT_OBJ = build/pas_client.o
+
+UTILS = src/shared/utils_v3.c
 SERVER = src/server/pas_server.c
 CLIENT = src/client/pas_client.c
 
@@ -14,19 +18,19 @@ build:
 	mkdir -p build
 
 pas_server: pas_server.o utils_v3.o
-	$(CC) $(CFLAGS) -o build/pas_server build/pas_server.o $(UTILS_OBJ)
+	$(CC) $(CFLAGS) -o build/pas_server $(SERVER_OBJ) $(UTILS_OBJ)
 
 pas_client: pas_client.o
-	$(CC) $(CFLAGS) -o build/pas_client build/pas_client.o $(UTILS_OBJ)
+	$(CC) $(CFLAGS) -o build/pas_client $(CLIENT_OBJ) $(UTILS_OBJ)
 
 pas_server.o: $(SERVER) utils_v3.o
-	$(CC) $(CFLAGS) -c $(SERVER) -o build/pas_server.o
+	$(CC) $(CFLAGS) -c $(SERVER) -o $(SERVER_OBJ)
 
 pas_client.o: $(CLIENT) utils_v3.o
-	$(CC) $(CFLAGS) -c $(CLIENT) -o build/pas_client.o
+	$(CC) $(CFLAGS) -c $(CLIENT) -o $(CLIENT_OBJ)
 
-utils_v3.o: src/ui/student_kit/utils_v3.c
-	$(CC) $(CFLAGS) -c src/ui/student_kit/utils_v3.c -o $(UTILS_OBJ)
+utils_v3.o: $(UTILS)
+	$(CC) $(CFLAGS) -c $(UTILS) -o $(UTILS_OBJ)
 
 # === Clean ===
 clean:

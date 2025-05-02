@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <stdbool.h>
 
-#include "pascman.h"
+#include "../ui/student_kit/pascman.h"
 
 #define NB_PLAYERS 2
 
