@@ -1,5 +1,4 @@
 #ifndef _SERVER_NETWORK_H_
-
 #define _SERVER_NETWORK_H_
 
 #include <sys/socket.h>
@@ -12,12 +11,12 @@
 #define BACKLOG 2
 
 /**
- * PRE:  serverPort: a valid port number
- * POST: on success, binds a socket to 0.0.0.0:serverPort and listens to it ;
- *       on failure, displays error cause and quits the program
- * RES: return socket file descriptor
+ * PRE:  state: a pointer to a ServerState structure with the server port properly set.
+ * POST: Creates a socket, binds it to 0.0.0.0:server_port, and starts listening for connections.
+ *       Updates the ServerState structure with the server socket file descriptor.
+ *       On failure, displays an error message and exits the program.
  */
-int init_socket_server(int serverPort);
+void init_socket_server(ServerState* state);
 
 /**
  * PRE:  sig: the signal number (expected to be SIGALRM).
@@ -27,12 +26,12 @@ int init_socket_server(int serverPort);
 void timeout_handler(int sig);
 
 /**
- * PRE:  server_socket: a valid server socket file descriptor.
- *       state: a pointer to a ServerState structure to manage connected clients.
+ * PRE:  state: a pointer to a ServerState structure with a valid server socket.
  * POST: Accepts up to MAX_PLAYERS client connections.
- *       Spawns a child process for each client to handle its connection.
  *       Updates the ServerState structure with connected client information.
+ *       Handles timeout for the second client if only one client is connected.
+ *       Displays messages for each connected client.
  */
-void accept_clients(int server_socket, ServerState *state);
+void accept_clients(ServerState *state);
 
 #endif // _SERVER_NETWORK_H_

@@ -29,9 +29,6 @@
 #define PLAYER1_ID (3 * MAP_SIZE)
 #define PLAYER2_ID (3 * MAP_SIZE + 1)
 
-// Juste histoire de rendre le code plus facile à lire.
-typedef int FileDescriptor;
-
 //#############################################################################
 // SHARED STATE (SHM)
 //#############################################################################

@@ -15,16 +15,23 @@
 #include <signal.h>
 #include <sys/ipc.h>
 #include <poll.h>
+#include <unistd.h>
 
 #define SERVER_IP "127.0.0.1" // localhost
 #define SERVER_PORT 15235
 
+// Juste histoire de rendre le code plus facile à lire.
+typedef int FileDescriptor;
+
 typedef struct {
+  int server_socket;
+  int server_port;
   int client_sockets[2];
   int clients_connected;
   int shm_id;
   struct GameState* shm_ptr;
   int sem_id;
+  FileDescriptor broadcaster_pipe;
 } ServerState;
 
 //******************************************************//

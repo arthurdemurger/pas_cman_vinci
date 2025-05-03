@@ -3,18 +3,22 @@
 void handle_client(int client_sock, int server_socket);
 
 // Function to initialize the socket server and bind it to a port
-int init_socket_server(int serverPort)
+void init_socket_server(ServerState *state)
 {
   int sockfd = ssocket();
 
+  // Reuse the address to avoid "address already in use" error
+  int optval = 1;
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+
   /* no socket error */
-  sbind(serverPort, sockfd);
+  sbind(state->server_port, sockfd);
 
   /* no bind error */
   slisten(sockfd, BACKLOG);
 
-  printf("Server started on %s:%d\n", SERVER_IP, SERVER_PORT);
-  return sockfd;
+  state->server_socket = sockfd;
+  printf("Server started on %s:%d\n", SERVER_IP, state->server_port);
 }
 
 void timeout_handler(int sig) {
@@ -28,7 +32,7 @@ void timeout_handler(int sig) {
 }
 
 // Function to accept client connections and manage the server state
-void accept_clients(int server_socket, ServerState *state) {
+void accept_clients(ServerState *state) {
   signal(SIGALRM, timeout_handler);
 
   while (state->clients_connected < MAX_PLAYERS) {
@@ -36,7 +40,7 @@ void accept_clients(int server_socket, ServerState *state) {
       alarm(30); // Set a timeout for the second client
     }
 
-    int client_sock = saccept(server_socket);
+    int client_sock = saccept(state->server_socket);
     alarm(0); // Cancel the timeout once a client connects
 
     printf("Client %d connected.\n", state->clients_connected + 1);

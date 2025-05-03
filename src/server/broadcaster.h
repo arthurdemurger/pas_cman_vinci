@@ -3,7 +3,7 @@
 
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"
-#include "../server/pas_server.h"
+#include "pas_server.h"
 
 /**
  * PRE:  arg: a pointer to a structure containing the necessary data for the broadcaster,
@@ -13,5 +13,16 @@
  *       On failure, displays an error message and exits the program.
  */
 void run_broadcaster(void *arg);
+
+/**
+ * PRE:  state: a pointer to the ServerState structure.
+ *       map_path: a valid path to the map file to be loaded.
+ * POST: Creates a pipe for communication between the server and the broadcaster.
+ *       Forks the broadcaster process and initializes it with the pipe's read end.
+ *       Loads the map data into shared memory and sends it through the pipe.
+ *       Updates the ServerState structure with the pipe's write end.
+ * RES:  Returns the PID of the broadcaster process.
+ */
+pid_t launch_broadcaster(ServerState* state, const char* map_path);
 
 #endif // _BROADCASTER_H_

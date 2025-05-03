@@ -9,6 +9,7 @@
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"
 #include "ipc.h"
+#include <fcntl.h>
 
 /**
  * PRE:  None

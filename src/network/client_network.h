@@ -5,12 +5,11 @@
 #include "../shared/utils_v3.h"
 
 /**
- * PRE: serverIP : a valid IP address
- *      serverPort: a valid port number
- * POST: on success, connects a client socket to serverIP:serverPort
+ * PRE: serverPort: a valid port number
+ * POST: on success, connects a client socket to SERVERIP:serverPort
  *       on failure, displays error cause and quits the program
  * RES: return socket file descriptor
  */
-int init_socket_client(char * serverIP, int serverPort);
+int init_socket_client(int serverPort);
 
 #endif // _CLIENT_NETWORK_H_

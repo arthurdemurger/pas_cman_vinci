@@ -1,18 +1,17 @@
 #include "ipc.h"
 
 // Function to initialize shared memory and reset the game state
-struct GameState* initialize_shared_memory(int* out_shm_id) {
+void initialize_shared_memory(ServerState* state) {
   int shm_id = sshmget(IPC_KEY, sizeof(struct GameState), IPC_CREAT | PERM);
   struct GameState *shm_ptr = (struct GameState *) sshmat(shm_id);
   reset_gamestate(shm_ptr);
-  *out_shm_id = shm_id;
-
+  state->shm_id = shm_id;
+  state->shm_ptr = shm_ptr;
   printf("Shared memory initialized.\n");
-  return shm_ptr;
 }
 
 // Function to initialize a semaphore
-int initialize_semaphore(void) {
+void initialize_semaphore(ServerState* state) {
   int sem_id = semget(IPC_KEY, 1, IPC_CREAT | PERM);
   checkNeg(sem_id, "Semget error");
 
@@ -23,6 +22,22 @@ int initialize_semaphore(void) {
     exit(EXIT_FAILURE);
   }
 
+  state->sem_id = sem_id;
   printf("Semaphore initialized.\n");
-  return sem_id;
+}
+
+void cleanup_resources(ServerState* state) {
+  if (state->shm_ptr != NULL) {
+    sshmdt(state->shm_ptr);
+  }
+
+  if (state->shm_id > 0) {
+    sshmdelete(state->shm_id);
+  }
+
+  if (state->sem_id > 0) {
+    sem_delete(state->sem_id);
+  }
+
+  printf("Ressources IPC nettoyées correctement.\n");
 }
