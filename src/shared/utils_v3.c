@@ -285,7 +285,7 @@ pid_t fork_and_run0(void (*run)(void)) {
     (*run)();
     exit(EXIT_SUCCESS);
   }
-  
+
   return childId;
 }
 

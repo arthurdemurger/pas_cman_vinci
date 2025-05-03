@@ -22,13 +22,16 @@
 typedef struct {
   int client_sockets[2];
   int clients_connected;
+  int shm_id;
+  struct GameState* shm_ptr;
+  int sem_id;
 } ServerState;
 
 //******************************************************//
 // KEYBOARD INPUT
 //******************************************************//
 
-/** 
+/**
  * Reads a line from standard input and copies it into the buffer s
  * PRE: s: char array of size sz
  *      sz: an integer > 2
