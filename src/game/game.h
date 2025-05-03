@@ -42,8 +42,8 @@ typedef int FileDescriptor;
 struct GameState
 {
     // Pour chaque position de la carte, on va stocker le
-    // type d'item qui se trouve à la position. Les joueurs, 
-    // par contre, ne sont pas stockés comme éléments de la 
+    // type d'item qui se trouve à la position. Les joueurs,
+    // par contre, ne sont pas stockés comme éléments de la
     // carte: leur position est gérée à part.
     // Dans la pratique, ca nous permettra de savoir:
     // 1. Si un mouvement est possible (destionation != wall)

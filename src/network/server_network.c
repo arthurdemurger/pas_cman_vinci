@@ -40,18 +40,7 @@ void accept_clients(int server_socket, ServerState *state) {
     printf("Client %d connected.\n", state->clients_connected + 1);
     state->client_sockets[state->clients_connected] = client_sock;
 
-    pid_t pid = fork();
-    if (pid == 0) {
-      handle_client(client_sock, server_socket);
-    }
-
     state->clients_connected++;
   }
 }
 
-// Function to handle a single client connection
-void handle_client(int client_sock, int server_socket) {
-  close(server_socket);
-  // Add client-specific handling logic here
-  exit(0);
-}
