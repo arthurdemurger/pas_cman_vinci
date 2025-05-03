@@ -1,7 +1,5 @@
 #include "server_network.h"
 
-void handle_client(int client_sock, int server_socket);
-
 // Function to initialize the socket server and bind it to a port
 void init_socket_server(ServerState *state)
 {
@@ -36,17 +34,26 @@ void accept_clients(ServerState *state) {
   signal(SIGALRM, timeout_handler);
 
   while (state->clients_connected < MAX_PLAYERS) {
-    if (state->clients_connected == 1) {
-      alarm(30); // Set a timeout for the second client
-    }
+      if (state->clients_connected == 1) {
+          alarm(30); // Timeout pour le 2e client
+      }
 
-    int client_sock = saccept(state->server_socket);
-    alarm(0); // Cancel the timeout once a client connects
+      int client_sock = saccept(state->server_socket);
+      alarm(0);
 
-    printf("Client %d connected.\n", state->clients_connected + 1);
-    state->client_sockets[state->clients_connected] = client_sock;
+      printf("Client %d connecté.\n", state->clients_connected + 1);
 
-    state->clients_connected++;
+      if (state->clients_connected < MAX_PLAYERS) {
+          uint8_t response = INSCRIPTION_OK;
+          send(client_sock, &response, sizeof(response), 0);
+          state->client_sockets[state->clients_connected++] = client_sock;
+      } else {
+          uint8_t response = INSCRIPTION_KO;
+          send(client_sock, &response, sizeof(response), 0);
+          close(client_sock);
+      }
   }
-  printf("Clients accepted.\n");
+
+  printf("2 clients acceptés.\n");
 }
+

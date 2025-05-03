@@ -2,14 +2,17 @@
 #define _CLIENT_NETWORK_H_
 
 #include <sys/socket.h>
+#include <stdlib.h>
+
 #include "../shared/utils_v3.h"
 
 /**
- * PRE: serverPort: a valid port number
- * POST: on success, connects a client socket to SERVERIP:serverPort
- *       on failure, displays error cause and quits the program
- * RES: return socket file descriptor
+ * PRE:  server_port: a valid port number (> 0).
+ * POST: Creates a socket, connects to the server at localhost:server_port, and verifies the server's response.
+ *       If the server accepts the connection, the function returns the connected socket file descriptor.
+ *       If the server refuses the connection or an error occurs, the program exits with an error message.
+ * RES:  Returns the connected socket file descriptor on success.
  */
-int init_socket_client(int serverPort);
+int connect_to_server(int server_port);
 
 #endif // _CLIENT_NETWORK_H_

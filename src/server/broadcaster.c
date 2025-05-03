@@ -33,8 +33,8 @@ pid_t launch_broadcaster(ServerState* state, const char* map_path) {
 
   int fd_map = sopen(map_path, O_RDONLY, 0);
   load_map(fd_map, fd_write_broad, state->shm_ptr);
-  printf("Map loaded\n");
   close(fd_map);
+  printf("Map loaded\n");
 
   return pid;
 }

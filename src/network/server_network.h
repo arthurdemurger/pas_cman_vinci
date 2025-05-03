@@ -3,9 +3,11 @@
 
 #include <sys/socket.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "../shared/utils_v3.h"
 #include "../server/pas_server.h"
-#include <stdlib.h>
 
 #define MAX_PLAYERS 2
 #define BACKLOG 2

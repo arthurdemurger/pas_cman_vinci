@@ -32,6 +32,9 @@ int main(int ac, char **av) {
   pid_t broad_pid = launch_broadcaster(&state, "resources/map.txt");
   (void)broad_pid; // Suppress unused variable warning
 
+  // Fork and run the client handler processes
+  launch_client_handler(&state);
+
   sleep(30);
   cleanup_resources(&state);
 }
