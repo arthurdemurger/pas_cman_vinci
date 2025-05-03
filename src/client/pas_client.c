@@ -18,5 +18,6 @@ int main(void) {
     // Écriture du pseudo dans le socket
     // swrite(sockfd, pseudo, 20);
 
+    // sleep(30);
     return 0;
 }

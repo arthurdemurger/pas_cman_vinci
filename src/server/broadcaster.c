@@ -1,6 +1,8 @@
 #include "broadcaster.h"
 
 void run_broadcaster(void *arg) {
+  printf("Broadcaster process created with PID\n");
+
   FileDescriptor pipe_fd = (int)(intptr_t)arg;
   ServerState* state = get_server_state();
   union Message msg;

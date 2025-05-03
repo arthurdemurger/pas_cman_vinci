@@ -13,7 +13,7 @@ int init_socket_server(int serverPort)
   /* no bind error */
   slisten(sockfd, BACKLOG);
 
-  /* no listen error */
+  printf("Server started on %s:%d\n", SERVER_IP, SERVER_PORT);
   return sockfd;
 }
 
@@ -29,6 +29,8 @@ void timeout_handler(int sig) {
 
 // Function to accept client connections and manage the server state
 void accept_clients(int server_socket, ServerState *state) {
+  signal(SIGALRM, timeout_handler);
+
   while (state->clients_connected < MAX_PLAYERS) {
     if (state->clients_connected == 1) {
       alarm(30); // Set a timeout for the second client
@@ -42,5 +44,5 @@ void accept_clients(int server_socket, ServerState *state) {
 
     state->clients_connected++;
   }
+  printf("Clients accepted.\n");
 }
-
