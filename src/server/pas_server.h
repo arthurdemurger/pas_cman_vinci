@@ -4,6 +4,9 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
+
+#include "server_loop.h"
 #include "ipc.h"
 #include "broadcaster.h"
 #include "client_handler.h"
@@ -19,5 +22,13 @@
  * RES:  Pointer to the ServerState structure or NULL if uninitialized.
  */
 ServerState* get_server_state(void);
+
+/**
+ * PRE:  format: a format string for the message to be printed.
+ *      ...: additional arguments for the format string.
+ * POST: Prints a formatted message to the server console.
+ *      The message is prefixed with "[SERVER] ".
+ */
+void print_server_msg(const char *format, ...);
 
 #endif // _PAS_SERVER_H_
