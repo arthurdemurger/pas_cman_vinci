@@ -1,6 +1,15 @@
 #include "broadcaster.h"
 
-void run_broadcaster(void *arg) {
+/**
+ * PRE:  arg: a pointer to a structure containing the necessary data for the broadcaster,
+ *            including the pipe read file descriptor and any other required context.
+ * POST: Continuously reads messages from the pipe and broadcasts them to all connected clients.
+ *       Uses the ServerState structure to access client sockets.
+ *       On failure, displays an error message and exits the program.
+ */
+static void run_broadcaster(void *arg);
+
+static void run_broadcaster(void *arg) {
   FileDescriptor pipe_fd = (int)(intptr_t)arg;
   ServerState* state = get_server_state();
   union Message msg;

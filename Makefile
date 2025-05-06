@@ -13,6 +13,7 @@ UTILS_SRC          = src/shared/utils_v3.c
 GAME_SRC           = src/game/game.c
 SERVER_NETWORK_SRC = src/network/server_network.c
 CLIENT_NETWORK_SRC = src/network/client_network.c
+PAS_LABO_SRC       = src/labo/pas_labo.c
 
 # === Fichiers headers ===
 SERVER_H         = src/server/pas_server.h
@@ -25,6 +26,7 @@ UTILS_H          = src/shared/utils_v3.h
 GAME_H           = src/game/game.h
 SERVER_NETWORK_H = src/network/server_network.h
 CLIENT_NETWORK_H = src/network/client_network.h
+PAS_LABO_H       = src/labo/pas_labo.h
 
 # === Fichiers objets ===
 SERVER_OBJ         = build/pas_server.o
@@ -37,21 +39,26 @@ UTILS_OBJ          = build/utils_v3.o
 GAME_OBJ           = build/game.o
 SERVER_NETWORK_OBJ = build/server_network.o
 CLIENT_NETWORK_OBJ = build/client_network.o
+PAS_LABO_OBJ			 = build/pas_labo.o
 
 # === Programmes compilés ===
-SERVER_BIN = build/pas_server
-CLIENT_BIN = build/pas_client
+PAS_SERVER_BIN = build/pas_server
+PAS_CLIENT_BIN = build/pas_client
+PAS_LABO_BIN = build/pas_labo
 
 # === Règles principales ===
-all: build $(SERVER_BIN) $(CLIENT_BIN)
+all: build $(PAS_SERVER_BIN) $(PAS_CLIENT_BIN) $(PAS_LABO_BIN)
 
 build:
 	mkdir -p build
 
-$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(SERVER_LOOP_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(PAS_SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(SERVER_LOOP_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
-$(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
+$(PAS_CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(PAS_LABO_BIN): $(PAS_LABO_OBJ) $(UTILS_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # === Règles de compilation des objets ===
@@ -85,8 +92,11 @@ $(SERVER_NETWORK_OBJ): $(SERVER_NETWORK_SRC) $(SERVER_NETWORK_H)
 $(CLIENT_NETWORK_OBJ): $(CLIENT_NETWORK_SRC) $(CLIENT_NETWORK_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(PAS_LABO_OBJ): $(PAS_LABO_SRC) $(PAS_LABO_H) $(UTILS_H)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 # === Nettoyage ===
 clean:
-	rm -f build/*.o build/pas_server build/pas_client
+	rm -f build/*.o build/pas_server build/pas_client build/pas_labo
 
 .PHONY: all clean build

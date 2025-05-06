@@ -2,7 +2,13 @@
 
 volatile sig_atomic_t timeout_flag = 0;
 
-// Function to initialize the socket server and bind it to a port
+/**
+ * PRE:  sig: the signal number (expected to be SIGALRM).
+ * POST: If one client is connected, closes the client's socket and resets the server state.
+ *       Displays a message indicating the client was disconnected due to timeout.
+ */
+static void timeout_handler(int sig);
+
 void init_socket_server(ServerState *state)
 {
   int sockfd = ssocket();
@@ -21,11 +27,10 @@ void init_socket_server(ServerState *state)
   print_server_msg("Server started on %s:%d", SERVER_IP, state->server_port);
 }
 
-void timeout_handler(int sig) {
+static void timeout_handler(int sig) {
   timeout_flag = 1;
 }
 
-// Function to accept client connections and manage the server state
 void accept_clients(ServerState *state) {
   signal(SIGALRM, timeout_handler);
 

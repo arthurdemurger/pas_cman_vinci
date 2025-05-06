@@ -1,6 +1,15 @@
 #include "client_handler.h"
 
-void run_client_handler(void* arg) {
+/**
+ * PRE:  arg: a pointer to a ClientHandlerArgs structure containing the socket file descriptor,
+ *            player identifier, and broadcaster pipe.
+ * POST: Handles client commands in a loop, processes user commands, and communicates with the game state.
+ *       Exits when the client disconnects or the game finishes.
+ * RES:  None. The function exits the process on completion.
+ */
+static void run_client_handler(void* arg);
+
+static void run_client_handler(void* arg) {
   ClientHandlerArgs* args = (ClientHandlerArgs*) arg;
   ServerState* state = get_server_state();
 

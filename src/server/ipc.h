@@ -2,16 +2,28 @@
 
 #define _IPC_H_
 
-#include <sys/shm.h>
-#include <sys/sem.h>
-#include "../shared/utils_v3.h"
-#include "../game/game.h"
-#include "pas_server.h"
-
+/************************************
+ * CONSTANTS
+ ************************************/
 #define PERM 0666
 #define IPC_KEY 1234
 #define BLOCKED 0
 #define UNBLOCKED 1
+
+/************************************
+ * INCLUDES
+ ************************************/
+/* Libraries */
+#include <sys/shm.h>
+#include <sys/sem.h>
+/* Files */
+#include "../shared/utils_v3.h"
+#include "../game/game.h"
+#include "pas_server.h"
+
+/************************************
+ * FUNCTIONS
+ ************************************/
 /**
  * PRE:  state: a pointer to the ServerState structure.
  * POST: Creates a semaphore set with one semaphore and initializes it to 0 (blocked).

@@ -1,11 +1,18 @@
 #ifndef _CLIENT_NETWORK_H_
 #define _CLIENT_NETWORK_H_
 
+/************************************
+ * INCLUDES
+ ************************************/
+/* Libraries */
 #include <sys/socket.h>
 #include <stdlib.h>
-
+/* Files */
 #include "../shared/utils_v3.h"
 
+/************************************
+ * FUNCTIONS
+ ************************************/
 /**
  * PRE:  server_port: a valid port number (> 0).
  * POST: Creates a socket, connects to the server at localhost:server_port, and verifies the server's response.

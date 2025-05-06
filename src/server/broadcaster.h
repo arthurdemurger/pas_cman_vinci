@@ -1,19 +1,17 @@
 #ifndef _BROADCASTER_H_
 #define _BROADCASTER_H_
 
+/************************************
+ * INCLUDES
+ ************************************/
+/* Files */
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"
 #include "pas_server.h"
 
-/**
- * PRE:  arg: a pointer to a structure containing the necessary data for the broadcaster,
- *            including the pipe read file descriptor and any other required context.
- * POST: Continuously reads messages from the pipe and broadcasts them to all connected clients.
- *       Uses the ServerState structure to access client sockets.
- *       On failure, displays an error message and exits the program.
- */
-void run_broadcaster(void *arg);
-
+/************************************
+ * FUNCTIONS
+ ************************************/
 /**
  * PRE:  state: a pointer to the ServerState structure.
  *       map_path: a valid path to the map file to be loaded.

@@ -1,11 +1,15 @@
 #ifndef _PAS_SERVER_H_
 #define _PAS_SERVER_H_
 
+/************************************
+ * INCLUDES
+ ************************************/
+/* Libraries */
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
+/* Files */
 #include "server_loop.h"
 #include "ipc.h"
 #include "broadcaster.h"
@@ -15,6 +19,9 @@
 #include "../shared/utils_v3.h"
 #include "../ui/student_kit/pascman.h"
 
+/************************************
+ * FUNCTIONS
+ ************************************/
 /**
  * PRE:  None
  * POST: Returns a pointer to the current ServerState structure.

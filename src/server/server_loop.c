@@ -2,6 +2,27 @@
 
 static volatile sig_atomic_t interrupted = 0;
 
+/**
+ * Resets the server state after a game ends.
+ *
+ * PRE:
+ *   - `state` is a valid pointer to an initialized ServerState structure.
+ * POST:
+ *   - All resources (pipes, sockets, processes) related to the game are cleaned up.
+ *   - The game state and server state are reset to their initial values.
+ */
+static void reset_after_game(ServerState* state);
+
+/**
+ * Handles the SIGINT signal by setting the `interrupted` flag.
+ *
+ * PRE:
+ *   - None.
+ * POST:
+ *   - The `interrupted` flag is set to 1 when SIGINT is received.
+ */
+static void sigint_handler(int sig);
+
 static void sigint_handler(int sig) {
   (void)sig;
   interrupted = 1;
@@ -15,7 +36,7 @@ void setup_sigint_handler(void) {
   sigaction(SIGINT, &sa, NULL);
 }
 
-void reset_after_game(ServerState* state) {
+static void reset_after_game(ServerState* state) {
   // Close the broadcaster pipe
   close(state->broadcaster_pipe);
   state->broadcaster_pipe = -1;
