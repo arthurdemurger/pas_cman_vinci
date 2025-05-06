@@ -21,8 +21,7 @@ void run_broadcaster(void *arg);
  *       Forks the broadcaster process and initializes it with the pipe's read end.
  *       Loads the map data into shared memory and sends it through the pipe.
  *       Updates the ServerState structure with the pipe's write end.
- * RES:  Returns the PID of the broadcaster process.
  */
-pid_t launch_broadcaster(ServerState* state, const char* map_path);
+void launch_broadcaster(ServerState* state, const char* map_path);
 
 #endif // _BROADCASTER_H_

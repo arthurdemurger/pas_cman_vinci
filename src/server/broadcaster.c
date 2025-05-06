@@ -1,7 +1,7 @@
 #include "broadcaster.h"
 
 void run_broadcaster(void *arg) {
-  printf("Broadcaster process created with PID\n");
+  printf("[SERVER] Broadcaster process created.\n");
 
   FileDescriptor pipe_fd = (int)(intptr_t)arg;
   ServerState* state = get_server_state();
@@ -9,7 +9,9 @@ void run_broadcaster(void *arg) {
 
   while (1) {
     ssize_t ret = sread(pipe_fd, &msg, sizeof(union Message));
-
+    if (ret <= 0) {
+      break; // Pipe closed
+    }
     for (int i = 0; i < state->clients_connected; i++) {
       int sockfd = state->client_sockets[i];
       ssize_t sent = send(sockfd, &msg, sizeof(union Message), 0);
@@ -19,7 +21,7 @@ void run_broadcaster(void *arg) {
   close(pipe_fd);
 }
 
-pid_t launch_broadcaster(ServerState* state, const char* map_path) {
+void launch_broadcaster(ServerState* state, const char* map_path) {
   int pipe_fds[2];
   spipe(pipe_fds);
 
@@ -28,13 +30,13 @@ pid_t launch_broadcaster(ServerState* state, const char* map_path) {
 
   state->broadcaster_pipe = fd_write_broad;
 
-  pid_t pid = fork_and_run1(run_broadcaster, (void*)(intptr_t)fd_read_broad);
-  checkNeg(pid, "Fork broadcaster");
+  state->broadcaster_pid = fork_and_run1(run_broadcaster, (void*)(intptr_t)fd_read_broad);
+  close(fd_read_broad);
+  print_server_msg("Broadcaster launched.");
 
   int fd_map = sopen(map_path, O_RDONLY, 0);
   load_map(fd_map, fd_write_broad, state->shm_ptr);
   close(fd_map);
-  printf("Map loaded\n");
+  print_server_msg("Map loaded.");
 
-  return pid;
 }
