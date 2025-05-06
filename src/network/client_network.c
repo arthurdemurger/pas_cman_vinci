@@ -18,7 +18,7 @@ static int init_socket_client(int serverPort)
     return sockfd; // return socket file descriptor
 }
 
-int connect_to_server(int server_port) {
+void connect_to_server(ClientState *client_state, int server_port) {
   int sockfd = init_socket_client(server_port);
 
   // read response from server
@@ -33,7 +33,7 @@ int connect_to_server(int server_port) {
   // check if the server accepted the connection
   if (code == INSCRIPTION_OK) {
       printf("Inscription acceptée !\n");
-      return sockfd;
+      client_state->sock_fd = sockfd;
   } else {
       printf("Inscription refusée.\n");
       close(sockfd);

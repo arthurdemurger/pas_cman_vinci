@@ -13,12 +13,12 @@ static void run_client_handler(void* arg) {
   ClientHandlerArgs* args = (ClientHandlerArgs*) arg;
   ServerState* state = get_server_state();
 
-  uint8_t dir;
+  enum Direction dir;
 
   // Loop to receive commands from the client
   // and process them until the client disconnects or the game finishes
   while (1) {
-    ssize_t r = recv(args->sockfd, &dir, sizeof(uint8_t), 0);
+    ssize_t r = recv(args->sockfd, &dir, sizeof(enum Direction), 0);
     if (r <= 0) {
       break; // client disconnected
     }

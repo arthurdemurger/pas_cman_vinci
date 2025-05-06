@@ -13,6 +13,8 @@ static volatile sig_atomic_t interrupted = 0;
  */
 static void reset_after_game(ServerState* state);
 
+
+
 void sigint_handler(int sig) {
   (void)sig;
   interrupted = 1;

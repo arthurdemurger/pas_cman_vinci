@@ -580,13 +580,20 @@ int saccept(int sockfd) {
   return newsockfd;
 }
 
+void check_port(int port) {
+  if (port < 1024 || port > 65535) {
+    printError("Invalid port");
+    exit(EXIT_FAILURE);
+  }
+}
+
 void hostname_to_ip(char *hostname, char *ip) {
   struct hostent *he = gethostbyname(hostname);
   checkCond(he == NULL, "gethostbyname problem");
 
   struct in_addr **addr_list = (struct in_addr **) he->h_addr_list;
   checkCond(addr_list[0] == NULL, "No address found");
-  
+
   char *adr = inet_ntoa(*addr_list[0]);
   checkCond(adr == 0, "PRB inet_ntoa");
   strcpy(ip, adr);

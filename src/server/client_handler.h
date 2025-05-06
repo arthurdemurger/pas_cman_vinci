@@ -6,6 +6,7 @@
  * INCLUDES
  ************************************/
 #include "../shared/utils_v3.h"
+#include "../shared/pascman.h"
 #include "../game/game.h"
 #include "pas_server.h"
 

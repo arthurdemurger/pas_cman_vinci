@@ -27,6 +27,12 @@
 typedef int FileDescriptor;
 
 typedef struct {
+  int sock_fd;
+  int ui_pipe[2];
+  pid_t ui_pid;
+} ClientState;
+
+typedef struct {
   int server_socket;
   int server_port;
   int client_sockets[2];
@@ -471,6 +477,13 @@ void hostname_to_ip (char * hostname, char* ip);
  *       A value  of 0 indicates that the call timed out and no file descriptors were ready.
  */
 int spoll(struct pollfd *fds, nfds_t nfds, int timeout);
+
+/**
+ * PRE: port: a port number
+ * POST: check if the port is valid (between 1024 and 65535)
+ *       exits with 1 on failure.
+ */
+void check_port(int port);
 
 /**
  * Identifie dans un tableau de fd un fd sur lequel des données sont disponibles

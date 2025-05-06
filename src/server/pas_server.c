@@ -27,7 +27,7 @@ int main(int ac, char **av) {
   ServerState state = {0};
   server_state_ptr = &state;
   state.server_port = atoi(av[1]);
-  state.clients_connected = 0;
+  check_port(state.server_port);
 
   // Initialize shared memory and reset the game state
   initialize_shared_memory(&state);
