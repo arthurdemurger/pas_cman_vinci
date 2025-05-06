@@ -14,16 +14,6 @@
  * FUNCTIONS
  ************************************/
 /**
- * Sets up the SIGINT handler to handle interruptions.
- *
- * PRE:
- *   - None.
- * POST:
- *   - A SIGINT handler is installed to set the `interrupted` flag when SIGINT is received.
- */
-void setup_sigint_handler(void);
-
-/**
  * Runs the server loop, accepting clients, launching game components, and resetting after each game.
  *
  * PRE:
@@ -34,5 +24,15 @@ void setup_sigint_handler(void);
  *   - After each game, the server state is reset.
  */
 void run_server(ServerState* state, const char* map_path);
+
+/**
+ * Handles the SIGINT signal by setting the `interrupted` flag.
+ *
+ * PRE:
+ *   - None.
+ * POST:
+ *   - The `interrupted` flag is set to 1 when SIGINT is received.
+ */
+void sigint_handler(int sig);
 
 #endif // _SERVER_LOOP_H_

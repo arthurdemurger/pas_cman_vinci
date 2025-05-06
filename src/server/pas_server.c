@@ -17,12 +17,12 @@ ServerState* get_server_state(void) {
 
 int main(int ac, char **av) {
   if (ac != 3) {
-    fprintf(stderr, "Usage: %s <port> <map path>\n", av[0]);
+    fprintf(stderr, "Usage: %s <port> <path/map.txt>\n", av[0]);
     exit(EXIT_FAILURE);
   }
 
   // Set up signal handler for SIGINT
-  setup_sigint_handler();
+  ssigaction(SIGINT, sigint_handler);
 
   ServerState state = {0};
   server_state_ptr = &state;

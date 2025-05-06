@@ -13,27 +13,9 @@ static volatile sig_atomic_t interrupted = 0;
  */
 static void reset_after_game(ServerState* state);
 
-/**
- * Handles the SIGINT signal by setting the `interrupted` flag.
- *
- * PRE:
- *   - None.
- * POST:
- *   - The `interrupted` flag is set to 1 when SIGINT is received.
- */
-static void sigint_handler(int sig);
-
-static void sigint_handler(int sig) {
+void sigint_handler(int sig) {
   (void)sig;
   interrupted = 1;
-}
-
-void setup_sigint_handler(void) {
-  struct sigaction sa;
-  sa.sa_handler = sigint_handler;
-  sigemptyset(&sa.sa_mask);
-  sa.sa_flags = 0;
-  sigaction(SIGINT, &sa, NULL);
 }
 
 static void reset_after_game(ServerState* state) {

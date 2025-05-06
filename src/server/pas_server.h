@@ -19,9 +19,9 @@
 #include "../shared/utils_v3.h"
 #include "../ui/student_kit/pascman.h"
 
-/************************************
+/************************************\
  * FUNCTIONS
- ************************************/
+\************************************/
 /**
  * PRE:  None
  * POST: Returns a pointer to the current ServerState structure.
