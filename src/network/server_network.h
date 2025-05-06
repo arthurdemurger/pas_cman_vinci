@@ -1,16 +1,26 @@
 #ifndef _SERVER_NETWORK_H_
 #define _SERVER_NETWORK_H_
 
+/************************************
+ * CONSTANTS
+ ************************************/
+#define BACKLOG 2
+
+/************************************
+ * INCLUDES
+ ************************************/
+/* Libraries */
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-
+/* Files */
 #include "../shared/utils_v3.h"
 #include "../server/pas_server.h"
 
-#define BACKLOG 2
-
+/************************************
+ * FUNCTIONS
+ ************************************/
 /**
  * PRE:  state: a pointer to a ServerState structure with the server port properly set.
  * POST: Creates a socket, binds it to 0.0.0.0:server_port, and starts listening for connections.
@@ -19,12 +29,6 @@
  */
 void init_socket_server(ServerState* state);
 
-/**
- * PRE:  sig: the signal number (expected to be SIGALRM).
- * POST: If one client is connected, closes the client's socket and resets the server state.
- *       Displays a message indicating the client was disconnected due to timeout.
- */
-void timeout_handler(int sig);
 
 /**
  * PRE:  state: a pointer to a ServerState structure with a valid server socket.

@@ -9,8 +9,9 @@
 #define MOVEMENT_DELAY 100000
 #define END_GAME_WAIT_SEC 5
 
-
-
+/************************************
+ * INCLUDES
+ ************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

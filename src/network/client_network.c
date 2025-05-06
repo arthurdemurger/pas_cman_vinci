@@ -5,7 +5,9 @@
  * POST: Crée une socket, connecte au serveur localhost:serverPort
  * RES:  Retourne le file descriptor de la socket connectée
  */
-int init_socket_client(int serverPort)
+static int init_socket_client(int serverPort);
+
+static int init_socket_client(int serverPort)
 {
     // socket creation
     int sockfd = ssocket();
