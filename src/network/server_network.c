@@ -39,7 +39,7 @@ void accept_clients(ServerState *state) {
 
       if (timeout_flag) {
         close(state->client_sockets[0]);
-        print_server_msg("Client [1] déconnecté (timeout).");
+        print_server_msg("Client [1] déconnecté (timeout)");
         state->clients_connected = 0;
         timeout_flag = 0;
         continue;
@@ -55,9 +55,9 @@ void accept_clients(ServerState *state) {
           close(client_sock);
       }
 
-      print_server_msg("Client %d connecté.\n", state->clients_connected + 1);
+      print_server_msg("Client [%d] connecté", state->clients_connected);
   }
 
-  print_server_msg("All clients connected.");
+  print_server_msg("All clients connected");
 }
 

@@ -40,7 +40,7 @@ void reset_after_game(ServerState* state) {
   state->client_handler_pids[1] = 0;
   state->broadcaster_pid = 0;
 
-  print_server_msg("Game finished.");
+  print_server_msg("Game finished");
 }
 
 void run_server(ServerState* state, const char* map_path) {

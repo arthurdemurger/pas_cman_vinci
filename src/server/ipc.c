@@ -7,7 +7,7 @@ void initialize_shared_memory(ServerState* state) {
   reset_gamestate(shm_ptr);
   state->shm_id = shm_id;
   state->shm_ptr = shm_ptr;
-  print_server_msg("Shared memory initialized.");
+  print_server_msg("Shared memory initialized");
 }
 
 // Function to initialize a semaphore
@@ -23,7 +23,7 @@ void initialize_semaphore(ServerState* state) {
   }
 
   state->sem_id = sem_id;
-  print_server_msg("Semaphore initialized.");
+  print_server_msg("Semaphore initialized");
 }
 
 void cleanup_resources(ServerState* state) {
@@ -39,5 +39,5 @@ void cleanup_resources(ServerState* state) {
     sem_delete(state->sem_id);
   }
 
-  print_server_msg("Ressources IPC nettoyées correctement.");
+  print_server_msg("Ressources IPC nettoyées correctement");
 }

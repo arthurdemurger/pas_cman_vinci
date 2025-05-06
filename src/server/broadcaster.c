@@ -1,8 +1,6 @@
 #include "broadcaster.h"
 
 void run_broadcaster(void *arg) {
-  printf("[SERVER] Broadcaster process created.\n");
-
   FileDescriptor pipe_fd = (int)(intptr_t)arg;
   ServerState* state = get_server_state();
   union Message msg;
@@ -32,11 +30,10 @@ void launch_broadcaster(ServerState* state, const char* map_path) {
 
   state->broadcaster_pid = fork_and_run1(run_broadcaster, (void*)(intptr_t)fd_read_broad);
   close(fd_read_broad);
-  print_server_msg("Broadcaster launched.");
+  print_server_msg("Broadcaster launched");
 
   int fd_map = sopen(map_path, O_RDONLY, 0);
   load_map(fd_map, fd_write_broad, state->shm_ptr);
   close(fd_map);
-  print_server_msg("Map loaded.");
-
+  print_server_msg("Map loaded");
 }

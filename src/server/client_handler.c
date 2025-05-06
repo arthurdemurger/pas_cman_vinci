@@ -41,7 +41,7 @@ void launch_client_handler(ServerState* state) {
 
     state->client_handler_pids[i] = fork_and_run1(run_client_handler, args);
   }
-  print_server_msg("Client handlers launched.");
+  print_server_msg("Client handlers launched");
   // Notify players after client handlers are launched
   send_registered(PLAYER1_ID, state->client_sockets[0]);
   send_registered(PLAYER2_ID, state->client_sockets[1]);
