@@ -7,7 +7,7 @@ void initialize_shared_memory(ServerState* state) {
   reset_gamestate(shm_ptr);
   state->shm_id = shm_id;
   state->shm_ptr = shm_ptr;
-  printf("Shared memory initialized.\n");
+  print_server_msg("Shared memory initialized.");
 }
 
 // Function to initialize a semaphore
@@ -17,13 +17,13 @@ void initialize_semaphore(ServerState* state) {
 
   union semun arg;
   arg.val = 0; // semaphore value 0 -> blocked
-  if (semctl(sem_id, 0, SETVAL, arg) == -1) {
+  if (semctl(sem_id, BLOCKED, SETVAL, arg) == -1) {
     perror("Error semctl in sem_create");
     exit(EXIT_FAILURE);
   }
 
   state->sem_id = sem_id;
-  printf("Semaphore initialized.\n");
+  print_server_msg("Semaphore initialized.");
 }
 
 void cleanup_resources(ServerState* state) {
@@ -39,5 +39,5 @@ void cleanup_resources(ServerState* state) {
     sem_delete(state->sem_id);
   }
 
-  printf("Ressources IPC nettoyées correctement.\n");
+  print_server_msg("Ressources IPC nettoyées correctement.");
 }

@@ -10,6 +10,8 @@
 
 #define PERM 0666
 #define IPC_KEY 1234
+#define BLOCKED 0
+#define UNBLOCKED 1
 /**
  * PRE:  state: a pointer to the ServerState structure.
  * POST: Creates a semaphore set with one semaphore and initializes it to 0 (blocked).
