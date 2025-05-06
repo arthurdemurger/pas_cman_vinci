@@ -1,5 +1,7 @@
 #include "server_network.h"
 
+volatile sig_atomic_t timeout_flag = 0;
+
 // Function to initialize the socket server and bind it to a port
 void init_socket_server(ServerState *state)
 {
@@ -16,17 +18,11 @@ void init_socket_server(ServerState *state)
   slisten(sockfd, BACKLOG);
 
   state->server_socket = sockfd;
-  printf("Server started on %s:%d\n", SERVER_IP, state->server_port);
+  print_server_msg("Server started on %s:%d", SERVER_IP, state->server_port);
 }
 
 void timeout_handler(int sig) {
-  ServerState* state = get_server_state();
-
-  if (state && state->clients_connected == 1) {
-    close(state->client_sockets[0]);
-    printf("Client 1 disconnected due to timeout.\n");
-    state->clients_connected = 0;
-  }
+  timeout_flag = 1;
 }
 
 // Function to accept client connections and manage the server state
@@ -41,7 +37,13 @@ void accept_clients(ServerState *state) {
       int client_sock = saccept(state->server_socket);
       alarm(0);
 
-      printf("Client %d connecté.\n", state->clients_connected + 1);
+      if (timeout_flag) {
+        close(state->client_sockets[0]);
+        print_server_msg("Client [1] déconnecté (timeout).");
+        state->clients_connected = 0;
+        timeout_flag = 0;
+        continue;
+      }
 
       if (state->clients_connected < MAX_PLAYERS) {
           uint8_t response = INSCRIPTION_OK;
@@ -52,8 +54,10 @@ void accept_clients(ServerState *state) {
           send(client_sock, &response, sizeof(response), 0);
           close(client_sock);
       }
+
+      print_server_msg("Client %d connecté.\n", state->clients_connected + 1);
   }
 
-  printf("2 clients acceptés.\n");
+  print_server_msg("All clients connected.");
 }
 

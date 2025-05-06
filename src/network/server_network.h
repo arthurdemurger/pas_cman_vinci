@@ -9,7 +9,6 @@
 #include "../shared/utils_v3.h"
 #include "../server/pas_server.h"
 
-#define MAX_PLAYERS 2
 #define BACKLOG 2
 
 /**
