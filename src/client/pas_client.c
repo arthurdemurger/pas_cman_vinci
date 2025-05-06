@@ -83,11 +83,8 @@ int main(int argc, char **argv) {
 
     // Boucle infinie sauf fin du pipe ou erreur
     while (1) {
-        // On lit jusqu'à BUF_SIZE octets depuis pipefd[0].
-        // Cette lecture est bloquante : le programme attend qu'il y ait des données à lire 
         ssize_t n = sread(pipefd[0], buf, BUF_SIZE);
         if (n == 0) {
-            // Fin du pipe : pas-cman-ipl a terminé ou fermé stdout
             printOk("Fin du pipe (pas-cman-ipl terminé)");
             break;
         }
@@ -95,18 +92,10 @@ int main(int argc, char **argv) {
             printError("Erreur lecture pipe");
             break;
         }
-        // Pour relayer la commande reçue vers le serveur
-        // On envoie les n octets lus du pipe vers le serveur via la socket.
-        // sock_fd : destinnation, buf : pointeur vers les données
-        // n : nombre d'octets, 0 : pas de flags
-        // return : le nombre d'octets envoyés
-        // (équivalent au write mais pour les sockets)
-        ssize_t sent = send(sock_fd, buf, n, 0);
-        // Si l'envoi échoue
-        if (sent < 0) {
-            // Afficher une erreur et on sort de la boucle.
-            printError("Erreur envoi serveur");
-            break;
+        // On suppose que chaque commande fait 4 octets
+        for (ssize_t i = 0; i < n; i += 4) {
+            printf("Received command: %d\n", (unsigned char)buf[i]);
+            send(sock_fd, &buf[i], 1, 0); // n'envoie que le premier octet
         }
     }
 
