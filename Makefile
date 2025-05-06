@@ -4,6 +4,7 @@ CFLAGS = -std=c17 -pedantic -Wall -Wvla -Werror -Wno-unused-variable -Wno-unused
 
 # === Fichiers sources ===
 SERVER_SRC         = src/server/pas_server.c
+SERVER_LOOP_SRC    = src/server/server_loop.c
 IPC_SRC            = src/server/ipc.c
 BROADCASTER_SRC    = src/server/broadcaster.c
 CLIENT_HANDLER_SRC = src/server/client_handler.c
@@ -15,6 +16,7 @@ CLIENT_NETWORK_SRC = src/network/client_network.c
 
 # === Fichiers headers ===
 SERVER_H         = src/server/pas_server.h
+SERVER_LOOP_H    = src/server/server_loop.h
 IPC_H            = src/server/ipc.h
 BROADCASTER_H    = src/server/broadcaster.h
 CLIENT_HANDLER_H = src/server/client_handler.h
@@ -26,6 +28,7 @@ CLIENT_NETWORK_H = src/network/client_network.h
 
 # === Fichiers objets ===
 SERVER_OBJ         = build/pas_server.o
+SERVER_LOOP_OBJ    = build/server_loop.o
 IPC_OBJ	           = build/ipc.o
 BROADCASTER_OBJ    = build/broadcaster.o
 CLIENT_HANDLER_OBJ = build/client_handler.o
@@ -45,7 +48,7 @@ all: build $(SERVER_BIN) $(CLIENT_BIN)
 build:
 	mkdir -p build
 
-$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(SERVER_LOOP_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
@@ -53,6 +56,9 @@ $(CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(UTILS_OBJ)
 
 # === Règles de compilation des objets ===
 $(SERVER_OBJ): $(SERVER_SRC) $(SERVER_H) $(UTILS_H) $(GAME_H)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(SERVER_LOOP_OBJ): $(SERVER_LOOP_SRC) $(SERVER_LOOP_H) $(IPC_H) $(SERVER_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(IPC_OBJ): $(IPC_SRC) $(IPC_H) $(SERVER_H)
