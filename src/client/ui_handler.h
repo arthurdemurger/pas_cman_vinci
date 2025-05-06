@@ -14,6 +14,7 @@
 /* Files */
 #include "../shared/utils_v3.h"
 #include "../shared/pascman.h"
+#include "pas_client_utils.h"
 
 /**
  * Launches the `pas-cman-ipl` process and sets up pipes for communication.

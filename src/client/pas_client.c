@@ -35,6 +35,6 @@ int main(int argc, char **argv) {
 
     // Wait for the UI process to finish
     swaitpid(client_state.ui_pid, NULL, 0);
-
+    print_client_msg("UI process terminated");
     return EXIT_SUCCESS;
 }

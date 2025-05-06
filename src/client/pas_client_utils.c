@@ -23,6 +23,7 @@ void cleanup(ClientState *client_state) {
       if (client_state->ui_pid > 0) {
       skill(client_state->ui_pid, SIGTERM);
     }
+    print_client_msg("Client resources cleaned up");
 }
 
 static void signal_handler(int signum) {
@@ -34,4 +35,15 @@ static void signal_handler(int signum) {
 void setup_signal_handlers(void) {
     ssigaction(SIGINT, signal_handler);
     ssigaction(SIGTERM, signal_handler);
+}
+
+void print_client_msg(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  colorOn(1, BLUE_TEXT);
+  printf("[CLIENT] ");
+  colorOff();
+  vprintf(format, args);
+  printf("\n");
+  va_end(args);
 }

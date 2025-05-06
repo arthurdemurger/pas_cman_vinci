@@ -12,14 +12,16 @@ void launch_pas_cman_ipl(ClientState* client_state) {
         sexecl("./src/ui/student_kit/target/release/pas-cman-ipl", "pas-cman-ipl", NULL);
     }
     sclose(client_state->ui_pipe[1]);
+    print_client_msg("pas-cman-ipl launched");
 }
 
 void relay_commands(ClientState* client_state) {
     enum Direction dir;
+
     while (1) {
         ssize_t n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
         if (n == 0) {
-            printOk("Pipe closed (pas-cman-ipl terminated)");
+            print_client_msg("UI process terminated");
             break;
         }
         if (n < 0) {

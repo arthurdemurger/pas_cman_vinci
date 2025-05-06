@@ -26,17 +26,17 @@ void connect_to_server(ClientState *client_state, int server_port) {
   ssize_t ret = recv(sockfd, &code, sizeof(uint8_t), 0);
   if (ret <= 0) {
       perror("Erreur lors de la lecture de la réponse du serveur");
-      close(sockfd);
+      cleanup(client_state);
       exit(EXIT_FAILURE);
   }
 
   // check if the server accepted the connection
   if (code == INSCRIPTION_OK) {
-      printf("Inscription acceptée !\n");
+      print_client_msg("Inscription OK");
       client_state->sock_fd = sockfd;
   } else {
-      printf("Inscription refusée.\n");
-      close(sockfd);
+      print_client_msg("Inscription KO");
+      cleanup(client_state);
       exit(EXIT_FAILURE);
   }
 }

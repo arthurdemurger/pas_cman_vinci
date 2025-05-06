@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <stdarg.h>
 /* Files */
 #include "../shared/utils_v3.h"
 #include "pas_client.h"
@@ -34,5 +34,15 @@ void cleanup(ClientState *client_state);
  *   - Signal handlers for SIGINT and SIGTERM are registered.
  */
 void setup_signal_handlers(void);
+
+/**
+ * Prints a formatted message to the client console.
+ *
+ * PRE:
+ *   - `format` is a valid format string.
+ * POST:
+ *   - The formatted message is printed to the client console.
+ */
+void print_client_msg(const char *format, ...);
 
 #endif // PAS_CLIENT_UTILS_H

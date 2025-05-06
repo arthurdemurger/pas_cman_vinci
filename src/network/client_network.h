@@ -9,6 +9,7 @@
 #include <stdlib.h>
 /* Files */
 #include "../shared/utils_v3.h"
+#include "../client/pas_client_utils.h"
 
 /************************************
  * FUNCTIONS

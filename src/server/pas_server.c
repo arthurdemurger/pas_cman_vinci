@@ -5,7 +5,9 @@ static ServerState* server_state_ptr = NULL;
 void print_server_msg(const char *format, ...) {
   va_list args;
   va_start(args, format);
-  printf("\033[1;32m[SERVER]\033[0m ");
+  colorOn(1, GREEN_TEXT);
+  printf("[SERVER] ");
+  colorOff();
   vprintf(format, args);
   printf("\n");
   va_end(args);
