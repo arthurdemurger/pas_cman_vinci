@@ -47,3 +47,14 @@ void print_client_msg(const char *format, ...) {
   printf("\n");
   va_end(args);
 }
+
+enum Direction char_to_direction(char c) {
+  switch (c) {
+      case '<': return LEFT;
+      case '>': return RIGHT;
+      case '^': return UP;
+      case 'v': return DOWN;
+      default:
+          return -1;
+  }
+}

@@ -6,7 +6,7 @@
  * INCLUDES
  ************************************/
 /* Libraries */
-
+#include <string.h>
 /* Files */
 #include "ui_handler.h"
 #include "pas_client_utils.h"

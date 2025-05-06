@@ -27,9 +27,12 @@
 typedef int FileDescriptor;
 
 typedef struct {
+  int server_port;
+  char* server_ip;
   int sock_fd;
   int ui_pipe[2];
   pid_t ui_pid;
+  bool test_mode;
 } ClientState;
 
 typedef struct {

@@ -17,9 +17,21 @@ void launch_pas_cman_ipl(ClientState* client_state) {
 
 void relay_commands(ClientState* client_state) {
     enum Direction dir;
+    char input;
 
     while (1) {
-        ssize_t n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
+      ssize_t n;
+        if (client_state->test_mode) {
+          n = sread(STDIN_FILENO, &input, sizeof(char));
+          if (n <= 0) break;
+
+          dir = char_to_direction(input);
+          if (dir == -1) {
+            continue;
+          }
+        } else {
+          n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
+        }
         if (n == 0) {
             print_client_msg("UI process terminated");
             break;

@@ -45,4 +45,15 @@ void setup_signal_handlers(void);
  */
 void print_client_msg(const char *format, ...);
 
+/**
+ * Converts a character to a corresponding direction enum value.
+ *
+ * PRE:
+ *   - `c` is a valid character representing a direction ('<', '>', '^', 'v').
+ * POST:
+ *   - Returns the corresponding Direction enum value.
+ */
+enum Direction char_to_direction(char c);
+
+
 #endif // PAS_CLIENT_UTILS_H
