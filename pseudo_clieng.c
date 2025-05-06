@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
         sclose(pipefd[1]); 
 
         // Lance pas-cman-ipl (il héritera de la socket si besoin)
-        sexecl("../src/ui/student_kit/pas-cman-ipl", "pas-cman-ipl", NULL);
+        sexecl("pas-cman-ipl", "pas-cman-ipl", NULL);
 
         // Si on arrive ici, c'est une erreur
         perror("execlp pas-cman-ipl");
@@ -87,8 +87,8 @@ int main(int argc, char **argv) {
     // Boucle infinie sauf fin du pipe ou erreur
     while (1) {
         
-        // On lit jusqu'à BUF_SIZE octets depuis pipefd[0].
-        // Cette lecture est bloquante : le programme attend qu'il y ait des données à lire 
+        // On lit jusqu’à BUF_SIZE octets depuis pipefd[0].
+        // Cette lecture est bloquante : le programme attend qu’il y ait des données à lire 
         ssize_t n = sread(pipefd[0], buf, BUF_SIZE);
         if (n == 0) {
             // Fin du pipe : pas-cman-ipl a terminé ou fermé stdout
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
         // return : le nombre d'octets envoyés
         // (équivalent au write mais pour les sockets)
         ssize_t sent = send(sock_fd, buf, n, 0);
-        // Si l'envoi échoue
+        // Si l’envoi échoue
         if (sent < 0) {
             // Afficher une erreur et on sort de la boucle.
             printError("Erreur envoi serveur");
