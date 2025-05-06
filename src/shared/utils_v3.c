@@ -297,7 +297,7 @@ pid_t fork_and_run1(void (*run)(void *), void* arg0) {
     (*run)(arg0);
     exit(EXIT_SUCCESS);
   }
-  
+
   return childId;
 }
 

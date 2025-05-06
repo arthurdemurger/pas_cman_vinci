@@ -21,6 +21,7 @@
 #define SERVER_PORT 15235
 #define INSCRIPTION_OK 1
 #define INSCRIPTION_KO 0
+#define MAX_PLAYERS 2
 
 // Juste histoire de rendre le code plus facile à lire.
 typedef int FileDescriptor;
@@ -34,6 +35,8 @@ typedef struct {
   struct GameState* shm_ptr;
   int sem_id;
   FileDescriptor broadcaster_pipe;
+  int broadcaster_pid;
+  int client_handler_pids[MAX_PLAYERS];
 } ServerState;
 
 //******************************************************//
