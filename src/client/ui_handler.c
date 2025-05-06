@@ -26,7 +26,6 @@ void relay_commands(ClientState* client_state) {
             printError("Error reading from pipe");
             break;
         }
-        printf("Sent command: %d\n", dir);
         ssize_t sent = send(client_state->sock_fd, &dir, sizeof(enum Direction), 0);
         if (sent < 0) {
             printError("Error sending to server");
