@@ -40,8 +40,9 @@ int main(int ac, char **av) {
   // Initialize socket server
   init_socket_server(&state);
 
+  char *map_path = av[2];
   // launch the server loop with the map path
-  run_server(&state, av[2]);
+  run_server(&state, map_path);
 
   // Clean up resources
   cleanup_resources(&state);

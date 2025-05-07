@@ -79,7 +79,7 @@ void accept_clients(ServerState *state) {
       if (state->clients_connected == 1) {
         timeout_flag = 0;
         client_1_sock = state->client_sockets[0];
-        alarm(10);
+        alarm(30);
       }
 
       int client_sock = accept_with_eintr(state->server_socket);
