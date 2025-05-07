@@ -89,7 +89,6 @@ ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags) {
     ret = recv(sockfd, buf, len, flags);
     if (ret < 0) {
       if (errno == EINTR) {
-        print_server_msg("Signal received, still receiving...");
         continue;
       }
       else {
@@ -100,7 +99,6 @@ ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags) {
     }
     break;
   }
-  print_server_msg("Received %zd bytes", ret);
   return ret;
 }
 
@@ -110,7 +108,6 @@ ssize_t safe_read(int fd, void *buf, size_t count) {
     ret = read(fd, buf, count);
     if (ret < 0) {
       if (errno == EINTR) {
-        print_server_msg("Signal received, still receiving...");
         continue;
       }
       else {
