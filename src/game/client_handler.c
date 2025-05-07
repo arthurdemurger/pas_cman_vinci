@@ -23,7 +23,6 @@ static void run_client_handler(void* arg) {
       break; // client disconnected
     }
 
-    print_server_msg("Received command from player %d: %c", args->player, dir);
     bool finished = process_user_command(state->shm_ptr, args->player, dir, args->broadcaster_pipe);
     if (finished) {
       break;
