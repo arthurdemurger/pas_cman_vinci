@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 /* Files */
 #include "../shared/utils_v3.h"
 #include "../server/pas_server.h"

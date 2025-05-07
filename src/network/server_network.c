@@ -1,6 +1,7 @@
 #include "server_network.h"
 
 volatile sig_atomic_t timeout_flag = 0;
+volatile sig_atomic_t client_1_sock = -1;
 
 /**
  * PRE:  sig: the signal number (expected to be SIGALRM).
@@ -8,6 +9,14 @@ volatile sig_atomic_t timeout_flag = 0;
  *       Displays a message indicating the client was disconnected due to timeout.
  */
 static void timeout_handler(int sig);
+
+/**
+ * PRE:  sockfd: a valid socket file descriptor.
+ * POST: Accepts a connection on the socket, handling EINTR by retrying the accept call.
+ *       On failure, displays an error message and exits the program.
+ * RES:  Returns the accepted client socket file descriptor.
+ */
+static int accept_with_eintr(int sockfd);
 
 void init_socket_server(ServerState *state)
 {
@@ -31,36 +40,50 @@ static void timeout_handler(int sig) {
   timeout_flag = 1;
 }
 
+static int accept_with_eintr(int sockfd) {
+  int client_sock = accept(sockfd, NULL, NULL);
+  if (client_sock < 0) {
+    if (errno == EINTR && timeout_flag) {
+      return -1;
+    }
+    perror("accept failure");
+    cleanup_resources(get_server_state());
+    exit(EXIT_FAILURE);
+  }
+  return client_sock;
+}
+
 void accept_clients(ServerState *state) {
-  signal(SIGALRM, timeout_handler);
+  ssigaction(SIGALRM, timeout_handler);
 
   while (state->clients_connected < MAX_PLAYERS) {
       if (state->clients_connected == 1) {
-          alarm(30); // Timeout pour le 2e client
+        timeout_flag = 0;
+        client_1_sock = state->client_sockets[0];
+        alarm(10);
       }
 
-      int client_sock = saccept(state->server_socket);
+      int client_sock = accept_with_eintr(state->server_socket);
       alarm(0);
 
       if (timeout_flag) {
+        state->clients_connected = 0;
         close(state->client_sockets[0]);
         print_server_msg("Client [1] déconnecté (timeout)");
-        state->clients_connected = 0;
         timeout_flag = 0;
         continue;
       }
 
-      if (state->clients_connected < MAX_PLAYERS) {
+      if (state->clients_connected < MAX_PLAYERS && client_sock != -1) {
           uint8_t response = INSCRIPTION_OK;
           send(client_sock, &response, sizeof(response), 0);
           state->client_sockets[state->clients_connected++] = client_sock;
+          print_server_msg("Client [%d] connecté", state->clients_connected);
       } else {
           uint8_t response = INSCRIPTION_KO;
           send(client_sock, &response, sizeof(response), 0);
           close(client_sock);
       }
-
-      print_server_msg("Client [%d] connecté", state->clients_connected);
   }
 
   print_server_msg("All clients connected");
