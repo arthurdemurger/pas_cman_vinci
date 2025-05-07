@@ -16,12 +16,17 @@ static void run_broadcaster(void *arg) {
 
   while (1) {
     ssize_t ret = sread(pipe_fd, &msg, sizeof(union Message));
-    if (ret <= 0) {
+    if (!ret) {
+      print_server_msg("Pipe closed");
       break; // Pipe closed
     }
+
     for (int i = 0; i < state->clients_connected; i++) {
       int sockfd = state->client_sockets[i];
       ssize_t sent = send(sockfd, &msg, sizeof(union Message), 0);
+    }
+    if (msg.msgt == GAME_OVER) {
+      break; // Game over
     }
   }
 

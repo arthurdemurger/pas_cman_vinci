@@ -19,8 +19,9 @@
 
 #define SERVER_IP "127.0.0.1" // localhost
 #define SERVER_PORT 15235
-#define INSCRIPTION_OK 1
 #define INSCRIPTION_KO 0
+#define INSCRIPTION_OK 1
+#define LAUNCH_GAME 2
 #define MAX_PLAYERS 2
 
 // Juste histoire de rendre le code plus facile à lire.

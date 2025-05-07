@@ -45,5 +45,9 @@ void relay_commands(ClientState* client_state) {
             printError("Error sending to server");
             break;
         }
+        if (!sent) {
+            print_client_msg("Server closed connection");
+            break;
+        }
     }
 }

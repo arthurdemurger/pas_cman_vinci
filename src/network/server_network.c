@@ -18,6 +18,13 @@ static void timeout_handler(int sig);
  */
 static int accept_with_eintr(int sockfd);
 
+/**
+ * PRE:  state: a pointer to a ServerState structure with connected clients.
+ * POST: Sends a game start signal to all connected clients.
+ *       Displays an error message and exits the program on failure.
+ */
+static void send_clients_game_start(ServerState *state);
+
 void init_socket_server(ServerState *state)
 {
   int sockfd = ssocket();
@@ -53,6 +60,18 @@ static int accept_with_eintr(int sockfd) {
   return client_sock;
 }
 
+static void send_clients_game_start(ServerState *state) {
+  uint8_t response = LAUNCH_GAME;
+  for (int i = 0; i < state->clients_connected; i++) {
+    int n = send(state->client_sockets[i], &response, sizeof(response), 0);
+    if (n < 0) {
+      perror("Error sending game start signal to client");
+      cleanup_resources(state);
+      exit(EXIT_FAILURE);
+    }
+  }
+}
+
 void accept_clients(ServerState *state) {
   ssigaction(SIGALRM, timeout_handler);
 
@@ -86,6 +105,8 @@ void accept_clients(ServerState *state) {
       }
   }
 
+  // Notify clients that the game is starting
+  send_clients_game_start(state);
   print_server_msg("All clients connected");
 }
 

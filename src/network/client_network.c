@@ -8,6 +8,13 @@
  */
 static int init_socket_client(char *server_ip, int serverPort);
 
+/**
+ * PRE:  state: un pointeur vers une structure ClientState
+ * POST: Lit la réponse du serveur et la stocke dans le code
+ * RES:  Retourne le nombre d'octets lus
+ */
+static ssize_t recv_server_response(ClientState *state, uint8_t *code);
+
 static int init_socket_client(char *server_ip, int serverPort)
 {
     // socket creation
@@ -19,23 +26,40 @@ static int init_socket_client(char *server_ip, int serverPort)
     return sockfd; // return socket file descriptor
 }
 
+static ssize_t recv_server_response(ClientState *state, uint8_t *code) {
+  ssize_t ret = recv(state->sock_fd, code, sizeof(uint8_t), 0);
+  if (ret <= 0) {
+      if (ret == 0) {
+          print_client_msg("Server closed connection");
+      } else {
+          perror("Recv error");
+      }
+      cleanup(state);
+      exit(EXIT_FAILURE);
+  }
+  return ret;
+}
+
 void connect_to_server(ClientState *client_state) {
   client_state->sock_fd = init_socket_client(client_state->server_ip, client_state->server_port);
 
-  // read response from server
   uint8_t code;
-  ssize_t ret = recv(client_state->sock_fd, &code, sizeof(uint8_t), 0);
-  if (ret <= 0) {
-      perror("Erreur lors de la lecture de la réponse du serveur");
-      cleanup(client_state);
-      exit(EXIT_FAILURE);
-  }
-
   // check if the server accepted the connection
+  recv_server_response(client_state, &code);
   if (code == INSCRIPTION_OK) {
       print_client_msg("Inscription OK");
   } else {
       print_client_msg("Inscription KO");
+      cleanup(client_state);
+      exit(EXIT_FAILURE);
+  }
+
+  // check if the server is ready to launch the game
+  recv_server_response(client_state, &code);
+  if (code == LAUNCH_GAME) {
+      print_client_msg("Launching game...");
+  } else {
+      print_client_msg("Error launching game");
       cleanup(client_state);
       exit(EXIT_FAILURE);
   }
