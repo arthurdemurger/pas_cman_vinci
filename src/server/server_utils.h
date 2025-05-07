@@ -36,17 +36,13 @@ void run_server(ServerState* state, const char* map_path);
 void sigint_handler(int sig);
 
 /**
- * Initializes the server state structure.
- *
+ * Retrieve the `interrupted` flag.
  * PRE:
- *   - `server_state_ptr` is a valid pointer to a ServerState structure.
+ *  - None.
  * POST:
- *   - The ServerState structure is initialized with default values.
- *   - Returns the initialized ServerState structure.
- * RES:
- *   - Returns a ServerState structure with all fields set to default values.
+ * - Returns the value of the `interrupted` flag.
  */
-ServerState init_server_state(ServerState* server_state_ptr);
+int get_interrupted(void);
 
 /**
  * Cleans up resources used by the server, including sockets and IPC.

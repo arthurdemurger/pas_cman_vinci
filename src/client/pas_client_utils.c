@@ -1,14 +1,14 @@
 #include "pas_client_utils.h"
 
-/**
- * Handles signals for clean termination of the client.
- *
- * PRE:
- *   - `signum` is a valid signal number (e.g., SIGINT, SIGTERM).
- * POST:
- *   - The client performs cleanup and exits gracefully.
- */
-static void signal_handler(int signum);
+// /**
+//  * Handles signals for clean termination of the client.
+//  *
+//  * PRE:
+//  *   - `signum` is a valid signal number (e.g., SIGINT, SIGTERM).
+//  * POST:
+//  *   - The client performs cleanup and exits gracefully.
+//  */
+// static void signal_handler(int signum);
 
 void cleanup(ClientState *client_state) {
     if (client_state->sock_fd != -1) {
@@ -26,16 +26,16 @@ void cleanup(ClientState *client_state) {
     print_client_msg("Client resources cleaned up");
 }
 
-static void signal_handler(int signum) {
-    printError("Signal received, shutting down client...");
-    cleanup(get_client_state());
-    exit(EXIT_SUCCESS);
-}
+// static void signal_handler(int signum) {
+//     printError("Signal received, shutting down client...");
+//     cleanup(get_client_state());
+//     exit(EXIT_SUCCESS);
+// }
 
-void setup_signal_handlers(void) {
-    ssigaction(SIGINT, signal_handler);
-    ssigaction(SIGTERM, signal_handler);
-}
+// void setup_signal_handlers(void) {
+//     ssigaction(SIGINT, signal_handler);
+//     ssigaction(SIGTERM, signal_handler);
+// }
 
 void print_client_msg(const char *format, ...) {
   va_list args;

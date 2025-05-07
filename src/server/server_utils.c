@@ -13,26 +13,13 @@ static volatile sig_atomic_t interrupted = 0;
  */
 static void reset_after_game(ServerState* state);
 
+int get_interrupted(void) {
+  return interrupted;
+}
+
 void sigint_handler(int sig) {
   (void)sig;
   interrupted = 1;
-}
-
-ServerState init_server_state(ServerState* server_state_ptr) {
-  ServerState state = {0};
-  server_state_ptr = &state;
-
-  state.broadcaster_pipe = -1;
-  state.server_socket = -1;
-  state.server_port = -1;
-  state.clients_connected = 0;
-  state.broadcaster_pid = -1;
-  state.client_handler_pids[0] = -1;
-  state.client_handler_pids[1] = -1;
-  state.client_sockets[0] = -1;
-  state.client_sockets[1] = -1;
-
-  return state;
 }
 
 void cleanup_resources(ServerState* state) {

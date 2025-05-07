@@ -25,8 +25,6 @@ int main(int argc, char **argv) {
     client_state.server_port = atoi(argv[2]);
     check_port(client_state.server_port);
 
-    setup_signal_handlers();
-
     connect_to_server(&client_state);
 
     // Launch the pas-cman-ipl process and set up pipes
