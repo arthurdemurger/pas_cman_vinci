@@ -11,10 +11,10 @@ COLOR_RESET=\033[0m  # Reset to default color
 # === Sources files ===
 # ======================== SERVER SOURCES ========================
 SERVER_SRC         = src/server/pas_server.c
-SERVER_LOOP_SRC    = src/server/server_loop.c
+SERVER_UTILS_SRC    = src/server/server_utils.c
 IPC_SRC            = src/server/ipc.c
 BROADCASTER_SRC    = src/server/broadcaster.c
-CLIENT_HANDLER_SRC = src/server/client_handler.c
+CLIENT_HANDLER_SRC = src/game/client_handler.c
 SERVER_NETWORK_SRC = src/network/server_network.c
 # ======================== CLIENT SOURCES ========================
 CLIENT_SRC           = src/client/pas_client.c
@@ -31,10 +31,10 @@ PAS_LABO_SRC       = src/labo/pas_labo.c
 # === Header files ===
 # ======================== SERVER HEADERS ========================
 SERVER_H         = src/server/pas_server.h
-SERVER_LOOP_H    = src/server/server_loop.h
+SERVER_UTILS_H   = src/server/server_utils.h
 IPC_H            = src/server/ipc.h
 BROADCASTER_H    = src/server/broadcaster.h
-CLIENT_HANDLER_H = src/server/client_handler.h
+CLIENT_HANDLER_H = src/game/client_handler.h
 SERVER_NETWORK_H = src/network/server_network.h
 # ======================== CLIENT HEADERS ========================
 CLIENT_H         = src/client/pas_client.h
@@ -51,7 +51,7 @@ PAS_LABO_H       = src/labo/pas_labo.h
 # === Object files ===
 # ======================== SERVER OBJECTS ========================
 SERVER_OBJ         = build/pas_server.o
-SERVER_LOOP_OBJ    = build/server_loop.o
+SERVER_UTILS_OBJ   = build/server_utils.o
 IPC_OBJ            = build/ipc.o
 BROADCASTER_OBJ    = build/broadcaster.o
 CLIENT_HANDLER_OBJ = build/client_handler.o
@@ -82,7 +82,7 @@ build:
 
 # === Binary rules ===
 # ======================== SERVER BINARY ========================
-$(PAS_SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(SERVER_LOOP_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
+$(PAS_SERVER_BIN): $(SERVER_OBJ) $(SERVER_NETWORK_OBJ) $(SERVER_UTILS_OBJ) $(IPC_OBJ) $(BROADCASTER_OBJ) $(CLIENT_HANDLER_OBJ) $(UTILS_OBJ) $(GAME_OBJ)
 	@echo "${COLOR_SERVER}Linking $@...${COLOR_RESET}"
 	@$(CC) $(CFLAGS) -o $@ $^
 	@echo "${COLOR_SERVER}Linked $@.${COLOR_RESET}"
@@ -105,7 +105,7 @@ $(SERVER_OBJ): $(SERVER_SRC) $(SERVER_H) $(UTILS_H) $(GAME_H)
 	@echo "${COLOR_SERVER}Compiling $<...${COLOR_RESET}"
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-$(SERVER_LOOP_OBJ): $(SERVER_LOOP_SRC) $(SERVER_LOOP_H) $(IPC_H) $(SERVER_H)
+$(SERVER_UTILS_OBJ): $(SERVER_UTILS_SRC) $(SERVER_UTILS_H) $(IPC_H) $(SERVER_H)
 	@echo "${COLOR_SERVER}Compiling $<...${COLOR_RESET}"
 	@$(CC) $(CFLAGS) -c $< -o $@
 

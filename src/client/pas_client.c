@@ -14,6 +14,9 @@ int main(int argc, char **argv) {
 
     // Initialize client state
     ClientState client_state = {0};
+    client_state.sock_fd = -1;
+    client_state.ui_pipe[0] = -1;
+    client_state.ui_pipe[1] = -1;
     client_state_ptr = &client_state;
     client_state.test_mode = (argc == 4 && strcmp(argv[3], "-test") == 0);
 

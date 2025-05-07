@@ -26,7 +26,7 @@ void initialize_semaphore(ServerState* state) {
   print_server_msg("Semaphore initialized");
 }
 
-void cleanup_resources(ServerState* state) {
+void cleanup_ipc(ServerState* state) {
   if (state->shm_ptr != NULL) {
     sshmdt(state->shm_ptr);
   }
@@ -39,5 +39,5 @@ void cleanup_resources(ServerState* state) {
     sem_delete(state->sem_id);
   }
 
-  print_server_msg("Ressources IPC nettoyées correctement");
+  print_server_msg("IPC resources cleaned up");
 }

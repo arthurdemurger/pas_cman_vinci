@@ -26,8 +26,18 @@ int main(int ac, char **av) {
   // Set up signal handler for SIGINT
   ssigaction(SIGINT, sigint_handler);
 
+  // ServerState state = init_server_state(server_state_ptr);
   ServerState state = {0};
   server_state_ptr = &state;
+  state.broadcaster_pipe = -1;
+  state.server_socket = -1;
+  state.server_port = -1;
+  state.clients_connected = 0;
+  state.broadcaster_pid = -1;
+  state.client_handler_pids[0] = -1;
+  state.client_handler_pids[1] = -1;
+  state.client_sockets[0] = -1;
+  state.client_sockets[1] = -1;
   state.server_port = atoi(av[1]);
   check_port(state.server_port);
 

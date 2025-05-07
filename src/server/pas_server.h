@@ -10,10 +10,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 /* Files */
-#include "server_loop.h"
 #include "ipc.h"
 #include "broadcaster.h"
-#include "client_handler.h"
+#include "server_utils.h"
+#include "../game/client_handler.h"
 #include "../game/game.h"
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"

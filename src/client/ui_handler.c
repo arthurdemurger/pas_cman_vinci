@@ -12,6 +12,7 @@ void launch_pas_cman_ipl(ClientState* client_state) {
         sexecl("./src/ui/student_kit/target/release/pas-cman-ipl", "pas-cman-ipl", NULL);
     }
     sclose(client_state->ui_pipe[1]);
+    client_state->ui_pipe[1] = -1;
     print_client_msg("pas-cman-ipl launched");
 }
 
@@ -21,33 +22,33 @@ void relay_commands(ClientState* client_state) {
 
     while (1) {
       ssize_t n;
-        if (client_state->test_mode) {
-          n = sread(STDIN_FILENO, &input, sizeof(char));
-          if (n <= 0) break;
+      if (client_state->test_mode) {
+        n = sread(STDIN_FILENO, &input, sizeof(char));
+        if (!n) {
+          print_client_msg("File terminated");
+          break;
+        }
 
-          dir = char_to_direction(input);
-          if (dir == -1) {
-            continue;
-          }
-        } else {
-          n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
+        dir = char_to_direction(input);
+        if (dir == -1) {
+          continue;
         }
+      } else {
+        n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
         if (n == 0) {
-            print_client_msg("UI process terminated");
-            break;
+          break;
         }
-        if (n < 0) {
-            printError("Error reading from pipe");
-            break;
-        }
-        ssize_t sent = send(client_state->sock_fd, &dir, sizeof(enum Direction), 0);
-        if (sent < 0) {
-            printError("Error sending to server");
-            break;
-        }
-        if (!sent) {
-            print_client_msg("Server closed connection");
-            break;
-        }
+      }
+
+      ssize_t sent = send(client_state->sock_fd, &dir, sizeof(enum Direction), 0);
+      if (sent < 0) {
+        perror("Send error");
+        cleanup(client_state);
+        exit(EXIT_FAILURE);
+      }
+      if (!sent) {
+        print_client_msg("Server closed connection");
+        break;
+      }
     }
 }

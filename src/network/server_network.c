@@ -1,6 +1,6 @@
 #include "server_network.h"
 
-volatile sig_atomic_t timeout_flag = 0;
+volatile sig_atomic_t timeout_flag = -1;
 volatile sig_atomic_t client_1_sock = -1;
 
 /**
@@ -50,7 +50,7 @@ static void timeout_handler(int sig) {
 static int accept_with_eintr(int sockfd) {
   int client_sock = accept(sockfd, NULL, NULL);
   if (client_sock < 0) {
-    if (errno == EINTR && timeout_flag) {
+    if (errno == EINTR && timeout_flag == 0) {
       return -1;
     }
     perror("accept failure");
@@ -79,17 +79,17 @@ void accept_clients(ServerState *state) {
       if (state->clients_connected == 1) {
         timeout_flag = 0;
         client_1_sock = state->client_sockets[0];
-        alarm(30);
+        alarm(5);
       }
 
       int client_sock = accept_with_eintr(state->server_socket);
       alarm(0);
 
-      if (timeout_flag) {
+      if (timeout_flag == 1) {
         state->clients_connected = 0;
         close(state->client_sockets[0]);
-        print_server_msg("Client [1] déconnecté (timeout)");
-        timeout_flag = 0;
+        print_server_msg("Client [1] disconnected (timeout)");
+        timeout_flag = -1;
         continue;
       }
 
@@ -97,7 +97,7 @@ void accept_clients(ServerState *state) {
           uint8_t response = INSCRIPTION_OK;
           send(client_sock, &response, sizeof(response), 0);
           state->client_sockets[state->clients_connected++] = client_sock;
-          print_server_msg("Client [%d] connecté", state->clients_connected);
+          print_server_msg("Client [%d] connected", state->clients_connected);
       } else {
           uint8_t response = INSCRIPTION_KO;
           send(client_sock, &response, sizeof(response), 0);

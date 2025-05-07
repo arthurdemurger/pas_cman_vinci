@@ -18,11 +18,12 @@ static void run_client_handler(void* arg) {
   // Loop to receive commands from the client
   // and process them until the client disconnects or the game finishes
   while (1) {
-    ssize_t r = recv(args->sockfd, &dir, sizeof(enum Direction), 0);
-    if (r <= 0) {
+    ssize_t r = safe_recv(args->sockfd, &dir, sizeof(enum Direction), 0);
+    if (!r) {
       break; // client disconnected
     }
 
+    print_server_msg("Received command from player %d: %c", args->player, dir);
     bool finished = process_user_command(state->shm_ptr, args->player, dir, args->broadcaster_pipe);
     if (finished) {
       break;

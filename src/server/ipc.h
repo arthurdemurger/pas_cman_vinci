@@ -42,9 +42,9 @@ void initialize_shared_memory(ServerState* state);
 
 /**
  * PRE:  state: a pointer to the ServerState structure.
- * POST: Cleans up the resources used by the server, including shared memory and semaphores.
+ * POST: Cleans up the ipc resources used by the server
  *       Displays a message indicating successful cleanup.
  */
-void cleanup_resources(ServerState* state);
+void cleanup_ipc(ServerState* state);
 
 #endif // _IPC_H_

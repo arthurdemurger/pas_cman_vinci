@@ -15,7 +15,7 @@ static void run_broadcaster(void *arg) {
   union Message msg;
 
   while (1) {
-    ssize_t ret = sread(pipe_fd, &msg, sizeof(union Message));
+    ssize_t ret = safe_read(pipe_fd, &msg, sizeof(union Message));
     if (!ret) {
       print_server_msg("Pipe closed");
       break; // Pipe closed

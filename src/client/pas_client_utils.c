@@ -13,15 +13,15 @@ static void signal_handler(int signum);
 void cleanup(ClientState *client_state) {
     if (client_state->sock_fd != -1) {
       sclose(client_state->sock_fd);
+      client_state->sock_fd = -1;
     }
     if (client_state->ui_pipe[0] != -1) {
       sclose(client_state->ui_pipe[0]);
+      client_state->ui_pipe[0] = -1;
     }
       if (client_state->ui_pipe[1] != -1) {
       sclose(client_state->ui_pipe[1]);
-    }
-      if (client_state->ui_pid > 0) {
-      skill(client_state->ui_pid, SIGTERM);
+      client_state->ui_pipe[1] = -1;
     }
     print_client_msg("Client resources cleaned up");
 }
