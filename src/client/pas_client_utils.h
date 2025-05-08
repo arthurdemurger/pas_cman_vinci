@@ -28,14 +28,6 @@
 void cleanup(ClientState *client_state);
 
 /**
- * Sets up signal handlers for specified signals.
- *
- * POST:
- *   - Signal handlers for SIGINT and SIGTERM are registered.
- */
-void setup_signal_handlers(void);
-
-/**
  * Prints a formatted message to the client console.
  *
  * PRE:
