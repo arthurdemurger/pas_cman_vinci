@@ -50,8 +50,14 @@ static void timeout_handler(int sig) {
 static int accept_with_eintr(int sockfd) {
   int client_sock = accept(sockfd, NULL, NULL);
   if (client_sock < 0) {
-    if (errno == EINTR && timeout_flag >= 0) {
-      return -1;
+    if (errno == EINTR) {
+      if (timeout_flag >= 0)
+        return -1;
+      else {
+        print_server_msg("Interrupted by signal. Exiting...");
+        cleanup_resources(get_server_state());
+        exit(EXIT_SUCCESS);
+      }
     }
     perror("Accept failure");
     cleanup_resources(get_server_state());
@@ -111,6 +117,7 @@ void accept_clients(ServerState *state) {
 
   timeout_flag = -1;
   ssigaction(SIGALRM, NULL);
+
   // Notify clients that the game is starting
   send_clients_game_start(state);
   print_server_msg("All clients connected");

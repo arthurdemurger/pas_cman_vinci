@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <stdarg.h>
 
 #include "../shared/utils_v3.h"
 

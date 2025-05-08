@@ -25,17 +25,18 @@ void relay_commands(ClientState* client_state) {
       if (client_state->test_mode) {
         n = sread(STDIN_FILENO, &input, sizeof(char));
         if (!n) {
-          print_client_msg("File terminated");
           break;
         }
 
         dir = char_to_direction(input);
         if (dir == -1) {
           continue;
+        } else if (dir == END_FILE) {
+          break;
         }
       } else {
         n = sread(client_state->ui_pipe[0], &dir, sizeof(enum Direction));
-        if (n == 0) {
+        if (!n) {
           break;
         }
       }

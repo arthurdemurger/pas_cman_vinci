@@ -13,6 +13,31 @@ static volatile sig_atomic_t interrupted = 0;
  */
 static void reset_after_game(ServerState* state);
 
+// /**
+//  * Safely waits for a process to finish, handling interruptions.
+//  *
+//  * PRE:
+//  *   - `pid` is the PID of the process to wait for.
+//  *   - `wstatus` is a pointer to an integer where the exit status will be stored.
+//  *   - `options` are the options for the waitpid call.
+//  * POST:
+//  *   - Waits for the specified process to finish, handling interruptions.
+//  * RES:
+//  *   - Returns the PID of the finished process or -1 on error.
+//  */
+// static pid_t safe_waitpid(pid_t pid, int *wstatus, int options);
+
+void print_server_msg(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  colorOn(1, GREEN_TEXT);
+  printf("[SERVER] ");
+  colorOff();
+  vprintf(format, args);
+  printf("\n");
+  va_end(args);
+}
+
 int get_interrupted(void) {
   return interrupted;
 }
@@ -46,11 +71,33 @@ void cleanup_resources(ServerState* state) {
   state->server_port = -1;
 }
 
+static pid_t safe_waitpid(pid_t pid, int *wstatus, int options) {
+  pid_t ret;
+  print_server_msg("Waiting for process %d to finish...", pid);
+  while (1) {
+    ret = swaitpid(pid, wstatus, options);
+    if (ret < 0) {
+      if (errno == EINTR && interrupted) {
+        continue;
+      }
+      else {
+        // print_server_msg("FUCK");
+        // perror("Waitpid error");
+        cleanup_resources(get_server_state());
+        exit(EXIT_FAILURE);
+      }
+    }
+    break;
+  }
+  print_server_msg("Process %d finished ", ret);
+  return ret;
+}
+
 static void reset_after_game(ServerState* state) {
   // wait for the client handlers and broadcaster to finish
-  swaitpid(state->client_handler_pids[0], NULL, 0);
-  swaitpid(state->client_handler_pids[1], NULL, 0);
-  swaitpid(state->broadcaster_pid, NULL, 0);
+  // safe_waitpid(state->client_handler_pids[0], NULL, 0);
+  // safe_waitpid(state->client_handler_pids[1], NULL, 0);
+  safe_waitpid(state->broadcaster_pid, NULL, 0);
 
   // Close the client sockets and broadcaster pipe
   for (int i = 0; i < state->clients_connected; ++i) {

@@ -29,10 +29,11 @@ void print_client_msg(const char *format, ...) {
 
 enum Direction char_to_direction(char c) {
   switch (c) {
-      case '<': return LEFT;
-      case '>': return RIGHT;
-      case '^': return UP;
-      case 'v': return DOWN;
+      case '<':  return LEFT;
+      case '>':  return RIGHT;
+      case '^':  return UP;
+      case 'v':  return DOWN;
+      case '\0': return END_FILE;
       default:
           return -1;
   }

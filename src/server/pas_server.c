@@ -2,17 +2,6 @@
 
 static ServerState* server_state_ptr = NULL;
 
-void print_server_msg(const char *format, ...) {
-  va_list args;
-  va_start(args, format);
-  colorOn(1, GREEN_TEXT);
-  printf("[SERVER] ");
-  colorOff();
-  vprintf(format, args);
-  printf("\n");
-  va_end(args);
-}
-
 ServerState* get_server_state(void) {
   return server_state_ptr;
 }

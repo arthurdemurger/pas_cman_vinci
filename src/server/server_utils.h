@@ -69,6 +69,14 @@ void cleanup_resources(ServerState* state);
 ssize_t safe_read(int fd, void *buf, size_t count);
 
 /**
+ * PRE:  format: a format string for the message to be printed.
+ *      ...: additional arguments for the format string.
+ * POST: Prints a formatted message to the server console.
+ *      The message is prefixed with "[SERVER] ".
+ */
+void print_server_msg(const char *format, ...);
+
+/**
  * Receives data from a socket safely, handling interruptions.
  *
  * PRE:

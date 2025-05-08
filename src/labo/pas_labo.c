@@ -28,6 +28,17 @@ static pid_t start_client(const char* port, int pipe_fd[2]);
  */
 static void process_movements(char* file_player1, char* file_player2, int pipe1[2], int pipe2[2]);
 
+void print_labo_msg(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  colorOn(1, RED_TEXT);
+  printf(" [LABO]  ");
+  colorOff();
+  vprintf(format, args);
+  printf("\n");
+  va_end(args);
+}
+
 
 static pid_t start_client(const char* port, int pipe_fd[2]) {
   pid_t pid = sfork();
@@ -48,48 +59,42 @@ static pid_t start_client(const char* port, int pipe_fd[2]) {
 }
 
 static void process_movements(char* file_player1, char* file_player2, int pipe1[2], int pipe2[2]) {
-  FILE* file1 = fopen(file_player1, "r");
-  FILE* file2 = fopen(file_player2, "r");
+  FileDescriptor file1 = sopen(file_player1, O_RDONLY, 0);
+  FileDescriptor file2 = sopen(file_player2, O_RDONLY, 0);
 
-  if (!file1 || !file2) {
-    if (file1) {
-      fclose(file1);
-    }
-    if (file2) {
-      fclose(file2);
-    }
-    perror("Error opening player files");
-    exit(EXIT_FAILURE);
-  }
-
-  int c1, c2;
+  ssize_t n;
+  char dir;
   int end1 = 0, end2 = 0;
 
   while (!end1 || !end2) {
     if (!end1) {
-      c1 = fgetc(file1);
-      if (c1 == EOF) {
+      n = sread(file1, &dir, sizeof(char));
+      if (!n) {
+        swrite(pipe1[1], "\0", sizeof(char));
         end1 = 1;
       } else {
-        swrite(pipe1[1], &c1, 1);
+        swrite(pipe1[1], &dir, sizeof(char));
       }
     }
     usleep(MOVEMENT_DELAY);
     if (!end2) {
-      c2 = fgetc(file2);
-      if (c2 == EOF) {
+      n = sread(file2, &dir, sizeof(char));
+      if (!n) {
+        swrite(pipe2[1], "\0", sizeof(char));
         end2 = 1;
       } else {
-        swrite(pipe2[1], &c2, 1);
+        swrite(pipe2[1], &dir, sizeof(char));
       }
     }
     usleep(MOVEMENT_DELAY);
   }
 
-  fclose(file1);
-  fclose(file2);
+  close(file1);
+  close(file2);
   sclose(pipe1[1]);
   sclose(pipe2[1]);
+
+  print_labo_msg("Finished processing movements");
 }
 
 int main(int argc, char* argv[]) {
@@ -115,28 +120,33 @@ int main(int argc, char* argv[]) {
     sclose(pipe2[1]);
     sexecl("./build/pas_server", "pas_server", port, map_path, NULL);
   }
+  print_labo_msg("Server started");
 
   usleep(SERVER_STARTUP_DELAY);
 
   client1_pid = start_client(port, pipe1);
+  print_labo_msg("Client [1] started");
+
   usleep(CLIENT_STARTUP_DELAY);
+
   client2_pid = start_client(port, pipe2);
+  print_labo_msg("Client [2] started");
 
   process_movements(player1_file, player2_file, pipe1, pipe2);
 
-  printf("Wait 5 seconds to see the end of the game\n");
   sleep(END_GAME_WAIT_SEC);
 
   // Terminate the server and clients
-  printf("Terminating server and clients...\n");
-  if (server_pid > 0) kill(server_pid, SIGINT);
-  if (client1_pid > 0) kill(client1_pid, SIGTERM);
-  if (client2_pid > 0) kill(client2_pid, SIGTERM);
+  print_labo_msg("Terminating server and clients...");
+  if (server_pid > 0) {
+    kill(server_pid, SIGINT);
+  }
 
   swaitpid(server_pid, NULL, 0);
   swaitpid(client1_pid, NULL, 0);
   swaitpid(client2_pid, NULL, 0);
-  printf("Server and clients terminated.\n");
+
+  print_labo_msg("Server and clients terminated");
 
   return EXIT_SUCCESS;
 }
