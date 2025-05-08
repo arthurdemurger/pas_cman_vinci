@@ -133,9 +133,9 @@ int main(int argc, char* argv[]) {
   if (client1_pid > 0) kill(client1_pid, SIGTERM);
   if (client2_pid > 0) kill(client2_pid, SIGTERM);
 
-  waitpid(server_pid, NULL, 0);
-  waitpid(client1_pid, NULL, 0);
-  waitpid(client2_pid, NULL, 0);
+  swaitpid(server_pid, NULL, 0);
+  swaitpid(client1_pid, NULL, 0);
+  swaitpid(client2_pid, NULL, 0);
   printf("Server and clients terminated.\n");
 
   return EXIT_SUCCESS;

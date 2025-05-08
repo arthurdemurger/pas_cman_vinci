@@ -48,9 +48,9 @@ void cleanup_resources(ServerState* state) {
 
 static void reset_after_game(ServerState* state) {
   // wait for the client handlers and broadcaster to finish
-  waitpid(state->client_handler_pids[0], NULL, 0);
-  waitpid(state->client_handler_pids[1], NULL, 0);
-  waitpid(state->broadcaster_pid, NULL, 0);
+  swaitpid(state->client_handler_pids[0], NULL, 0);
+  swaitpid(state->client_handler_pids[1], NULL, 0);
+  swaitpid(state->broadcaster_pid, NULL, 0);
 
   // Close the client sockets and broadcaster pipe
   for (int i = 0; i < state->clients_connected; ++i) {
