@@ -109,6 +109,7 @@ void accept_clients(ServerState *state) {
       }
   }
 
+  timeout_flag = -1;
   ssigaction(SIGALRM, NULL);
   // Notify clients that the game is starting
   send_clients_game_start(state);
