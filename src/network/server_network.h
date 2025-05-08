@@ -5,6 +5,7 @@
  * CONSTANTS
  ************************************/
 #define BACKLOG 2
+#define TIMEOUT 30
 
 /************************************
  * INCLUDES
