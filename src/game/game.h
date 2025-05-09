@@ -8,7 +8,7 @@
 #include <string.h>
 #include "../shared/utils_v3.h"
 
-#include "../ui/student_kit/pascman.h"
+#include "../shared/pascman.h"
 
 #define NB_PLAYERS 2
 

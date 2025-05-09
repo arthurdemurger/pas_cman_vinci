@@ -17,6 +17,6 @@
 #include "../game/game.h"
 #include "../network/server_network.h"
 #include "../shared/utils_v3.h"
-#include "../ui/student_kit/pascman.h"
+#include "../shared/pascman.h"
 
 #endif // _PAS_SERVER_H_
