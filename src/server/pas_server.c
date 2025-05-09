@@ -1,11 +1,5 @@
 #include "pas_server.h"
 
-static ServerState* server_state_ptr = NULL;
-
-ServerState* get_server_state(void) {
-  return server_state_ptr;
-}
-
 int main(int ac, char **av) {
   if (ac != 3) {
     fprintf(stderr, "Usage: %s <port> <path/map.txt>\n", av[0]);
@@ -17,7 +11,6 @@ int main(int ac, char **av) {
 
   // ServerState state = init_server_state(server_state_ptr);
   ServerState state = {0};
-  server_state_ptr = &state;
   state.server_port = atoi(av[1]);
   check_port(state.server_port);
 

@@ -1,24 +1,24 @@
 #include "client_handler.h"
 
 /**
- * PRE:  arg: a pointer to a ClientHandlerArgs structure containing the socket file descriptor,
- *            player identifier, and broadcaster pipe.
+ * PRE:  arg0: a pointer to ClientHandlerArgs structure containing the socket file descriptor and player ID.
+ *       arg1: a pointer to the ServerState structure containing the game state and shared memory.
  * POST: Handles client commands in a loop, processes user commands, and communicates with the game state.
  *       Exits when the client disconnects or the game finishes.
  * RES:  None. The function exits the process on completion.
  */
-static void run_client_handler(void* arg);
+static void run_client_handler(void* arg0, void* arg1);
 
-static void run_client_handler(void* arg) {
-  ClientHandlerArgs* args = (ClientHandlerArgs*) arg;
-  ServerState* state = get_server_state();
+static void run_client_handler(void* arg0, void* arg1) {
+  ClientHandlerArgs* args = (ClientHandlerArgs*) arg0;
+  ServerState* state = (ServerState *) arg1;
 
   enum Direction dir;
 
   // Loop to receive commands from the client
   // and process them until the client disconnects or the game finishes
   while (1) {
-    ssize_t r = safe_recv(args->sockfd, &dir, sizeof(enum Direction), 0);
+    ssize_t r = safe_recv(args->sockfd, &dir, sizeof(enum Direction), 0, state);
     if (!r) {
       break; // client disconnected
     }
@@ -47,7 +47,7 @@ void launch_client_handler(ServerState* state) {
       args.player = PLAYER2;
     }
 
-    state->client_handler_pids[i] = fork_and_run1(run_client_handler, &args);
+    state->client_handler_pids[i] = fork_and_run2(run_client_handler, (void*) &args, (void*) state);
   }
   print_server_msg("Client handlers launched");
 

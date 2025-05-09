@@ -12,11 +12,12 @@ static void timeout_handler(int sig);
 
 /**
  * PRE:  sockfd: a valid socket file descriptor.
+ *       state: a pointer to a ServerState structure with connected clients.
  * POST: Accepts a connection on the socket, handling EINTR by retrying the accept call.
  *       On failure, displays an error message and exits the program.
  * RES:  Returns the accepted client socket file descriptor.
  */
-static int accept_with_eintr(int sockfd);
+static int accept_with_eintr(int sockfd, ServerState *state);
 
 /**
  * PRE:  state: a pointer to a ServerState structure with connected clients.
@@ -47,7 +48,7 @@ static void timeout_handler(int sig) {
   timeout_flag = 1;
 }
 
-static int accept_with_eintr(int sockfd) {
+static int accept_with_eintr(int sockfd, ServerState *state) {
   int client_sock = accept(sockfd, NULL, NULL);
   if (client_sock < 0) {
     if (errno == EINTR) {
@@ -55,12 +56,12 @@ static int accept_with_eintr(int sockfd) {
         return -1;
       else {
         print_server_msg("Interrupted by signal. Exiting...");
-        cleanup_resources(get_server_state());
+        cleanup_resources(state);
         exit(EXIT_SUCCESS);
       }
     }
     perror("Accept failure");
-    cleanup_resources(get_server_state());
+    cleanup_resources(state);
     exit(EXIT_FAILURE);
   }
   return client_sock;
@@ -88,7 +89,7 @@ void accept_clients(ServerState *state) {
         alarm(TIMEOUT);
       }
 
-      int client_sock = accept_with_eintr(state->server_socket);
+      int client_sock = accept_with_eintr(state->server_socket, state);
       alarm(0);
 
       if (timeout_flag == 1) {

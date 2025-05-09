@@ -14,17 +14,4 @@
 #include "../shared/utils_v3.h"
 #include "../shared/pascman.h"
 
-/************************************
- * FUNCTIONS
- ************************************/
-/**
- * Retrieves the client state.
- *
- * PRE:
- *  - `client_state` is a valid pointer to an initialized ClientState structure.
- * POST:
- * - Returns a pointer to the ClientState structure.
- */
-ClientState* get_client_state(void);
-
 #endif // _PAS_CLIENT_H_

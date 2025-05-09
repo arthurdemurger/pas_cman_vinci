@@ -71,9 +71,8 @@ void cleanup_resources(ServerState* state) {
   state->server_port = -1;
 }
 
-static pid_t safe_waitpid(pid_t pid, int *wstatus, int options) {
+static pid_t safe_waitpid(pid_t pid, int *wstatus, int options, ServerState* state) {
   pid_t ret;
-  print_server_msg("Waiting for process %d to finish...", pid);
   while (1) {
     ret = swaitpid(pid, wstatus, options);
     if (ret < 0) {
@@ -81,15 +80,12 @@ static pid_t safe_waitpid(pid_t pid, int *wstatus, int options) {
         continue;
       }
       else {
-        // print_server_msg("FUCK");
-        // perror("Waitpid error");
-        cleanup_resources(get_server_state());
+        cleanup_resources(state);
         exit(EXIT_FAILURE);
       }
     }
     break;
   }
-  print_server_msg("Process %d finished ", ret);
   return ret;
 }
 
@@ -97,7 +93,7 @@ static void reset_after_game(ServerState* state) {
   // wait for the client handlers and broadcaster to finish
   // safe_waitpid(state->client_handler_pids[0], NULL, 0);
   // safe_waitpid(state->client_handler_pids[1], NULL, 0);
-  safe_waitpid(state->broadcaster_pid, NULL, 0);
+  safe_waitpid(state->broadcaster_pid, NULL, 0, state);
 
   // Close the client sockets and broadcaster pipe
   for (int i = 0; i < state->clients_connected; ++i) {
@@ -117,7 +113,7 @@ static void reset_after_game(ServerState* state) {
   state->broadcaster_pipe = -1;
 }
 
-ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags) {
+ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags, ServerState* state) {
   ssize_t ret;
   while (1) {
     ret = recv(sockfd, buf, len, flags);
@@ -127,7 +123,7 @@ ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags) {
       }
       else {
         perror("Recv error");
-        cleanup_resources(get_server_state());
+        cleanup_resources(state);
         exit(EXIT_FAILURE);
       }
     }
@@ -136,7 +132,7 @@ ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags) {
   return ret;
 }
 
-ssize_t safe_read(int fd, void *buf, size_t count) {
+ssize_t safe_read(int fd, void *buf, size_t count, ServerState* state) {
   ssize_t ret;
   while (1) {
     ret = read(fd, buf, count);
@@ -146,7 +142,7 @@ ssize_t safe_read(int fd, void *buf, size_t count) {
       }
       else {
         perror("Read error");
-        cleanup_resources(get_server_state());
+        cleanup_resources(state);
         exit(EXIT_FAILURE);
       }
     }

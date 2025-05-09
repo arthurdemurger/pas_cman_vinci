@@ -1,11 +1,5 @@
 #include "pas_client.h"
 
-static ClientState* client_state_ptr = NULL;
-
-ClientState* get_client_state(void) {
-  return client_state_ptr;
-}
-
 int main(int argc, char **argv) {
   if (argc < 3 || argc > 4) {
     fprintf(stderr, "Usage: %s <host> <port> [-test]\n", argv[0]);
@@ -17,7 +11,6 @@ int main(int argc, char **argv) {
     client_state.sock_fd = -1;
     client_state.ui_pipe[0] = -1;
     client_state.ui_pipe[1] = -1;
-    client_state_ptr = &client_state;
     client_state.test_mode = (argc == 4 && strcmp(argv[3], "-test") == 0);
 
     // Set server port

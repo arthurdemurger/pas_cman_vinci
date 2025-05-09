@@ -61,12 +61,13 @@ void cleanup_resources(ServerState* state);
  *   - `fd` is a valid file descriptor.
  *   - `buf` is a pointer to the buffer where data will be read.
  *   - `count` is the number of bytes to read.
+ *   - `state` is a pointer to the ServerState structure.
  * POST:
  *   - Reads data from the file descriptor into the buffer.
  * RES:
  *   - Returns the number of bytes read, or -1 on error.
  */
-ssize_t safe_read(int fd, void *buf, size_t count);
+ssize_t safe_read(int fd, void *buf, size_t count, ServerState* state);
 
 /**
  * PRE:  format: a format string for the message to be printed.
@@ -84,11 +85,12 @@ void print_server_msg(const char *format, ...);
  *   - `buf` is a pointer to the buffer where data will be received.
  *   - `len` is the number of bytes to receive.
  *   - `flags` are the flags for the recv function.
+ *   - `state` is a pointer to the ServerState structure.
  * POST:
  *   - Receives data from the socket into the buffer.
  * RES:
  *   - Returns the number of bytes received, or -1 on error.
  */
-ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags);
+ssize_t safe_recv(int sockfd, void *buf, size_t len, int flags, ServerState* state);
 
 #endif // _SERVER_UTILS_H_

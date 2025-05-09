@@ -1,24 +1,23 @@
 #include "broadcaster.h"
 
 /**
- * PRE:  arg: a pointer to a structure containing the necessary data for the broadcaster,
- *            including the pipe read file descriptor and any other required context.
+ * PRE:  arg1: an fd for the read end of the pipe.
+ *       arg2: a pointer to the ServerState structure.
  * POST: Continuously reads messages from the pipe and broadcasts them to all connected clients.
  *       Uses the ServerState structure to access client sockets.
  *       On failure, displays an error message and exits the program.
  */
-static void run_broadcaster(void *arg);
+static void run_broadcaster(void *arg0, void *arg1);
 
-static void run_broadcaster(void *arg) {
-  FileDescriptor pipe_fd = (int)(intptr_t)arg;
-  ServerState* state = get_server_state();
+static void run_broadcaster(void *arg0, void *arg1) {
+  FileDescriptor pipe_fd = (int)(intptr_t)arg0;
+  ServerState* state = (ServerState*)arg1;
   union Message msg;
 
   while (1) {
-    ssize_t ret = safe_read(pipe_fd, &msg, sizeof(union Message));
+    ssize_t ret = safe_read(pipe_fd, &msg, sizeof(union Message), state);
     if (!ret) {
-      print_server_msg("Pipe closed");
-      break; // Pipe closed
+      break;
     }
 
     for (int i = 0; i < state->clients_connected; i++) {
@@ -42,7 +41,7 @@ void launch_broadcaster(ServerState* state, const char* map_path) {
 
   state->broadcaster_pipe = fd_write_broad;
 
-  state->broadcaster_pid = fork_and_run1(run_broadcaster, (void*)(intptr_t)fd_read_broad);
+  state->broadcaster_pid = fork_and_run2(run_broadcaster, (void*)(intptr_t)fd_read_broad, (void*)state);
   close(fd_read_broad);
   print_server_msg("Broadcaster launched");
 

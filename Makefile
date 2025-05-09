@@ -27,6 +27,7 @@ UTILS_SRC          = src/shared/utils_v3.c
 GAME_SRC           = src/game/game.c
 # ======================== PAS LABO SOURCES ========================
 PAS_LABO_SRC       = src/labo/pas_labo.c
+PAS_LABO_UTILS_SRC = src/labo/pas_labo_utils.c
 
 # === Header files ===
 # ======================== SERVER HEADERS ========================
@@ -47,6 +48,7 @@ UTILS_H          = src/shared/utils_v3.h
 GAME_H           = src/game/game.h
 # ======================== PAS LABO HEADERS ========================
 PAS_LABO_H       = src/labo/pas_labo.h
+PAS_LABO_UTILS_H = src/labo/pas_labo_utils.h
 
 # === Object files ===
 # ======================== SERVER OBJECTS ========================
@@ -67,6 +69,7 @@ UTILS_OBJ          = build/utils_v3.o
 GAME_OBJ           = build/game.o
 # ======================== PAS LABO OBJECTS ========================
 PAS_LABO_OBJ       = build/pas_labo.o
+PAS_LABO_UTILS_OBJ = build/pas_labo_utils.o
 
 # === Compiled programs ===
 PAS_SERVER_BIN = build/pas_server
@@ -94,7 +97,7 @@ $(PAS_CLIENT_BIN): $(CLIENT_OBJ) $(CLIENT_NETWORK_OBJ) $(CLIENT_UTILS_OBJ) $(UI_
 	@echo "${COLOR_CLIENT}Linked $@.${COLOR_RESET}"
 
 # ======================== PAS LABO BINARY ========================
-$(PAS_LABO_BIN): $(PAS_LABO_OBJ) $(UTILS_OBJ)
+$(PAS_LABO_BIN): $(PAS_LABO_OBJ) $(UTILS_OBJ) $(PAS_LABO_UTILS_OBJ)
 	@echo "${COLOR_PAS_LABO}Linking $@...${COLOR_RESET}"
 	@$(CC) $(CFLAGS) -o $@ $^
 	@echo "${COLOR_PAS_LABO}Linked $@.${COLOR_RESET}"
@@ -154,6 +157,10 @@ $(GAME_OBJ): $(GAME_SRC) $(GAME_H)
 
 # ======================== PAS LABO OBJECTS ========================
 $(PAS_LABO_OBJ): $(PAS_LABO_SRC) $(PAS_LABO_H) $(UTILS_H)
+	@echo "${COLOR_PAS_LABO}Compiling $<...${COLOR_RESET}"
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(PAS_LABO_UTILS_OBJ): $(PAS_LABO_UTILS_SRC) $(PAS_LABO_UTILS_H) $(UTILS_H)
 	@echo "${COLOR_PAS_LABO}Compiling $<...${COLOR_RESET}"
 	@$(CC) $(CFLAGS) -c $< -o $@
 

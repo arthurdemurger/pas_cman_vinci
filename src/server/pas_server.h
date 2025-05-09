@@ -19,15 +19,4 @@
 #include "../shared/utils_v3.h"
 #include "../ui/student_kit/pascman.h"
 
-/************************************\
- * FUNCTIONS
-\************************************/
-/**
- * PRE:  None
- * POST: Returns a pointer to the current ServerState structure.
- *       If the ServerState is not initialized, returns NULL.
- * RES:  Pointer to the ServerState structure or NULL if uninitialized.
- */
-ServerState* get_server_state(void);
-
 #endif // _PAS_SERVER_H_
