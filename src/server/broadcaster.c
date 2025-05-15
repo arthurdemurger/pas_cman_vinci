@@ -25,6 +25,13 @@ static void run_broadcaster(void *arg0, void *arg1) {
       ssize_t sent = send(sockfd, &msg, sizeof(union Message), 0);
     }
     if (msg.msgt == GAME_OVER) {
+      if (msg.game_over.winner == 1) {
+        print_server_msg("Game over: Player 1 wins");
+      } else if (msg.game_over.winner == 2) {
+        print_server_msg("Game over: Player 2 wins");
+      } else {
+        print_server_msg("Game over: Draw");
+      }
       break; // Game over
     }
   }
